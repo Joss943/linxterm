@@ -1,0 +1,6 @@
+# compiled programs and compiler files: ./build.sh recreates them
+bin/
+build/
+
+# copy of the sources taken before version 1.2 (kept on disk, not in Git)
+.backup/
