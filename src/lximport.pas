@@ -16,6 +16,7 @@ type
     Added: Integer;
     Skipped: Integer;      { unsupported session types }
     Existing: Integer;     { already in the session list }
+    Stripped: Integer;     { local commands / expert options removed for safety }
     Folder: string;        { top folder of the imported sessions }
   end;
 
@@ -71,6 +72,9 @@ begin
     Result := Result + #10 + IntToStr(R.Existing) + ' session(s) were already in your list.';
   if R.Skipped > 0 then
     Result := Result + #10 + IntToStr(R.Skipped) + ' session(s) of a type that does not exist on Linux were skipped.';
+  if R.Stripped > 0 then
+    Result := Result + #10 + IntToStr(R.Stripped) + ' session(s) contained a local command or expert options ' +
+      '(ssh / FreeRDP): they were removed for safety, check these sessions before using them.';
   Result := Result + #10#10'Passwords are never imported: they are asked at the first connection.';
 end;
 
@@ -89,6 +93,7 @@ begin
   R.Added := 0;
   R.Skipped := 0;
   R.Existing := 0;
+  R.Stripped := 0;
   R.Folder := Folder;
 end;
 
@@ -699,7 +704,7 @@ begin
   low := LowerCase(txt);
   if (Trim(txt) <> '') and (Trim(txt)[1] = '{') then
   begin
-    Result := Store.ImportFrom(FileName, n);
+    Result := Store.ImportFrom(FileName, n, R.Stripped);
     R.Added := n;
     if not Result then Err := 'The file is not a valid ' + APP_NAME + ' sessions file.';
   end

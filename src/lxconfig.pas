@@ -116,7 +116,7 @@ type
     procedure RenameFolder(const OldName, NewName: string);
     function UniqueName(const Base: string): string;
     function ExportTo(const FileName: string): Boolean;
-    function ImportFrom(const FileName: string; out Count: Integer): Boolean;
+    function ImportFrom(const FileName: string; out Count, Stripped: Integer): Boolean;
   end;
 
   TSettings = class
@@ -169,6 +169,7 @@ type
     { passwords }
     SavePasswords: string;     { always | ask | never }
     UseKeyring: Boolean;
+    PasswordFile: Boolean;     { no keyring: keep passwords in an (obfuscated) file }
     { misc }
     Recent: TStringList;       { session ids or "ssh://user@host:port" }
     OpenTabs: TStringList;     { serialized sessions open at exit }
@@ -186,6 +187,9 @@ var
   Store: TSessionStore;
 
 function KindFromId(const Id: string; Def: TSessionKind = skSSH): TSessionKind;
+{ refuses host / user / gateway names that ssh, mosh or FreeRDP could read as
+  command line options or that contain shell syntax (option injection) }
+function CheckSessionTarget(S: TSession; out Err: string): Boolean;
 function LoadJsonFile(const FileName: string; BackupDamaged: Boolean = True): TJSONData;
 function SaveJsonFile(const FileName: string; D: TJSONData): Boolean;
 function JStr(O: TJSONObject; const Key, Def: string): string;
@@ -193,7 +197,8 @@ function JInt(O: TJSONObject; const Key: string; Def: Integer): Integer;
 function JBool(O: TJSONObject; const Key: string; Def: Boolean): Boolean;
 
 { passwords }
-procedure StorePassword(const Key, Password: string);
+{ False when the password could not be kept (no keyring and no password file) }
+function StorePassword(const Key, Password: string): Boolean;
 function LookupPassword(const Key: string; out Password: string): Boolean;
 procedure ForgetPassword(const Key: string);
 function ListStoredPasswordKeys: TStringArray;
@@ -204,6 +209,71 @@ implementation
 
 uses
   BaseUnix, base64, lxdyn;
+
+function HasUnsafeChars(const S: string; AllowSpace: Boolean): Boolean;
+var
+  c: Char;
+begin
+  Result := True;
+  for c in S do
+  begin
+    if (c < ' ') or (c = #127) then Exit;
+    if (c = ' ') and not AllowSpace then Exit;
+    if c in ['''', '"', '`', '$', ';', '&', '|', '<', '>', '(', ')', '{', '}', '*', '?', '!', '\', '#', '~', '^'] then Exit;
+  end;
+  Result := False;
+end;
+
+function CheckSessionTarget(S: TSession; out Err: string): Boolean;
+var
+  c: Char;
+begin
+  Result := False;
+  Err := '';
+  if not (S.Kind in [skSSH, skSFTP, skMosh, skTelnet, skRDP, skVNC, skFTP]) then Exit(True);
+  if (S.Host <> '') and ((S.Host[1] = '-') or HasUnsafeChars(S.Host, False)) then
+  begin
+    Err := 'The host name "' + S.Host + '" is not valid: it must not start with "-" nor contain spaces or ' +
+      'shell characters.';
+    Exit;
+  end;
+  if S.User <> '' then
+  begin
+    if S.Kind = skRDP then
+    begin
+      { Windows accounts: spaces and DOMAIN\user are allowed, control characters are not }
+      for c in S.User do
+        if (c < ' ') or (c = #127) then
+        begin
+          Err := 'The user name contains control characters.';
+          Exit;
+        end;
+    end
+    else if (S.User[1] = '-') or HasUnsafeChars(S.User, False) then
+    begin
+      Err := 'The user name "' + S.User + '" is not valid: it must not start with "-" nor contain spaces or ' +
+        'shell characters.';
+      Exit;
+    end;
+  end;
+  if (S.JumpHost <> '') and ((S.JumpHost[1] = '-') or HasUnsafeChars(S.JumpHost, False)) then
+  begin
+    Err := 'The SSH gateway "' + S.JumpHost + '" is not valid.';
+    Exit;
+  end;
+  if (S.Port < 0) or (S.Port > 65535) then
+  begin
+    Err := 'The port ' + IntToStr(S.Port) + ' is not valid.';
+    Exit;
+  end;
+  for c in S.KeyFile do
+    if c < ' ' then
+    begin
+      Err := 'The private key file name contains control characters.';
+      Exit;
+    end;
+  Result := True;
+end;
 
 function KindFromId(const Id: string; Def: TSessionKind): TSessionKind;
 var
@@ -756,7 +826,7 @@ begin
   end;
 end;
 
-function TSessionStore.ImportFrom(const FileName: string; out Count: Integer): Boolean;
+function TSessionStore.ImportFrom(const FileName: string; out Count, Stripped: Integer): Boolean;
 var
   d: TJSONData;
   a: TJSONArray;
@@ -764,6 +834,7 @@ var
   s: TSession;
 begin
   Count := 0;
+  Stripped := 0;
   Result := False;
   d := LoadJsonFile(FileName, False);
   if (d = nil) or (d.JSONType <> jtObject) then
@@ -786,6 +857,16 @@ begin
         s.FromJSON(TJSONObject(a[i]));
         s.Id := NewId;
         s.HasPassword := False;
+        { a file received from somebody else must not run anything on this
+          computer: local commands and expert options are dropped }
+        if (s.ExtraOptions <> '') or (s.Command <> '') or (s.ShellPath <> '') or (s.RdpExtra <> '') then
+        begin
+          s.ExtraOptions := '';
+          s.Command := '';
+          s.ShellPath := '';
+          s.RdpExtra := '';
+          Inc(Stripped);
+        end;
         Add(s);
         Inc(Count);
       end;
@@ -862,6 +943,7 @@ begin
   AutoReconnect := True;
   SavePasswords := 'ask';
   UseKeyring := True;
+  PasswordFile := False;
 end;
 
 procedure TSettings.Load;
@@ -925,6 +1007,7 @@ begin
     AutoReconnect := JBool(o, 'auto_reconnect', AutoReconnect);
     SavePasswords := JStr(o, 'save_passwords', SavePasswords);
     UseKeyring := JBool(o, 'use_keyring', UseKeyring);
+    PasswordFile := JBool(o, 'password_file', PasswordFile);
     Recent.Clear;
     a := o.Find('recent', jtArray) as TJSONArray;
     if a <> nil then
@@ -1000,6 +1083,7 @@ begin
     o.Add('auto_reconnect', AutoReconnect);
     o.Add('save_passwords', SavePasswords);
     o.Add('use_keyring', UseKeyring);
+    o.Add('password_file', PasswordFile);
     a := TJSONArray.Create;
     for i := 0 to Recent.Count - 1 do
       a.Add(Recent[i]);
@@ -1138,7 +1222,7 @@ begin
   Result := ((Settings = nil) or Settings.UseKeyring) and SecretAvailable;
 end;
 
-procedure StorePassword(const Key, Password: string);
+function StorePassword(const Key, Password: string): Boolean;
 var
   attrs: Pointer;
   err: PGError;
@@ -1164,13 +1248,19 @@ begin
   o := FilePasswords;
   try
     if o.Find(Key) <> nil then o.Delete(Key);
-    if not ok then
+    { without keyring the password is only obfuscated: opt-in }
+    if not ok and (Settings <> nil) and Settings.PasswordFile then
+    begin
       o.Add(Key, Obfuscate(Password));
-    SaveJsonFile(ConfigDir + '/passwords.json', o);
+      ok := True;
+    end;
+    if (o.Count > 0) or FileExists(ConfigDir + '/passwords.json') then
+      SaveJsonFile(ConfigDir + '/passwords.json', o);
   finally
     o.Free;
   end;
-  IndexAdd(Key, True);
+  IndexAdd(Key, ok);
+  Result := ok;
 end;
 
 function LookupPassword(const Key: string; out Password: string): Boolean;
@@ -1207,6 +1297,9 @@ begin
   finally
     o.Free;
   end;
+  { a password of the obfuscated file moves to the keyring as soon as it works }
+  if Result and KeyringUsable then
+    StorePassword(Key, Password);
 end;
 
 procedure ForgetPassword(const Key: string);

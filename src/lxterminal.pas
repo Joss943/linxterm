@@ -180,6 +180,7 @@ type
     procedure ShowContextMenu(Event: Pointer);
     procedure NoteActivity(Bell: Boolean);
     procedure TermpropChanged(const Name: string);
+    procedure OpenLink(const Url: string; Confirm: Boolean);
     procedure QuietFor(Ms: Integer);
     procedure ReconnectTick;
     function ScrollZoom(Event: Pointer): Boolean;
@@ -596,6 +597,11 @@ begin
   OpenUri(ItemText(item, 'addr'));
 end;
 
+procedure MenuOpenLink(item: Pointer; data: gpointer); cdecl;
+begin
+  TTerminalTab(data).OpenLink(ItemText(item, 'addr'), False);
+end;
+
 procedure MenuCopyText(item: Pointer; data: gpointer); cdecl;
 var
   t: string;
@@ -604,9 +610,10 @@ begin
   gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), PChar(t), -1);
 end;
 
-function AddrItem(Menu: Pointer; const Text, Icon: string; Cb: Pointer; const Addr, Kind: string): Pointer;
+function AddrItem(Menu: Pointer; const Text, Icon: string; Cb: Pointer; const Addr, Kind: string;
+  Data: Pointer = nil): Pointer;
 begin
-  Result := NewImageMenuItem(Menu, Text, Icon, Cb, nil);
+  Result := NewImageMenuItem(Menu, Text, Icon, Cb, Data);
   g_object_set_data_full(Result, 'addr', g_strdup(PChar(Addr)), @g_free);
   g_object_set_data_full(Result, 'kind', g_strdup(PChar(Kind)), @g_free);
 end;
@@ -681,6 +688,7 @@ begin
   gtk_widget_set_vexpand(Term, True);
   gtk_box_pack_start(hbox, Term, True, True, 0);
   sb := gtk_scrollbar_new(GTK_ORIENTATION_VERTICAL, gtk_scrollable_get_vadjustment(Term));
+  AddClass(sb, 'lx-term-scroll');
   gtk_box_pack_start(hbox, sb, False, False, 0);
   gtk_box_pack_start(Container, hbox, True, True, 0);
   { remote monitoring bar (MobaXterm style: icon, gauge and value per item) }
@@ -1570,6 +1578,7 @@ var
   tag: gint;
   url: string;
   menu: Pointer;
+  hyper: Boolean;
 begin
   Result := False;
   if gdk_event_get_event_type(Event) <> GDK_BUTTON_PRESS then Exit;
@@ -1587,6 +1596,8 @@ begin
   if (btn = 1) and ((st and GDK_CONTROL_MASK) <> 0) then
   begin
     url := TakeStr(vte_terminal_hyperlink_check_event(Term, Event));
+    { the text of an OSC 8 hyperlink can differ from its target: confirm }
+    hyper := url <> '';
     tag := -1;
     if url = '' then
       url := MatchAt(Event, tag);
@@ -1599,7 +1610,7 @@ begin
       PopupMenuAtPointer(menu, Term, Event);
     end
     else
-      OpenUri(url);
+      OpenLink(url, hyper);
     Exit(True);
   end;
 end;
@@ -1622,9 +1633,74 @@ begin
 end;
 
 procedure TTerminalTab.AddLinkItems(Menu: Pointer; const Url: string);
+var
+  shown: string;
 begin
-  AddrItem(Menu, 'Open the link', 'web-browser', @MenuOpenUrl, Url, '');
+  { the real target is shown (underscores doubled: menu mnemonics) }
+  shown := Url;
+  if Length(shown) > 70 then shown := Copy(shown, 1, 67) + '...';
+  AddrItem(Menu, 'Open ' + StringReplace(shown, '_', '__', [rfReplaceAll]), 'web-browser', @MenuOpenLink, Url, '', Self);
   AddrItem(Menu, 'Copy the link address', 'edit-copy', @MenuCopyText, Url, '');
+end;
+
+{ a link of the terminal output: web and mail links open in the browser,
+  ssh / sftp / telnet / rdp / vnc addresses in LinXterm (checked like any
+  session), local files only from local shells; anything else (javascript:,
+  data:, smb:...) is refused }
+procedure TTerminalTab.OpenLink(const Url: string; Confirm: Boolean);
+var
+  scheme, rest, user, host: string;
+  p: Integer;
+  s: TSession;
+begin
+  p := Pos(':', Url);
+  if p < 2 then Exit;
+  scheme := LowerCase(Copy(Url, 1, p - 1));
+  if (scheme = 'http') or (scheme = 'https') or (scheme = 'ftp') or (scheme = 'ftps') or (scheme = 'mailto') or
+    ((scheme = 'file') and IsLocalShell) then
+  begin
+    if (Confirm or (scheme = 'file')) and not AskYesNo('Open this link?', Url) then Exit;
+    OpenUri(Url);
+    Exit;
+  end;
+  if (scheme = 'ssh') or (scheme = 'sftp') or (scheme = 'telnet') or (scheme = 'rdp') or (scheme = 'vnc') then
+  begin
+    rest := Copy(Url, p + 1, MaxInt);
+    if Copy(rest, 1, 2) = '//' then Delete(rest, 1, 2);
+    p := Pos('/', rest);
+    if p > 0 then rest := Copy(rest, 1, p - 1);
+    user := '';
+    p := LastDelimiter('@', rest);
+    if p > 0 then
+    begin
+      user := Copy(rest, 1, p - 1);
+      rest := Copy(rest, p + 1, MaxInt);
+      { ssh://user;fingerprint=...@host }
+      if Pos(';', user) > 0 then user := Copy(user, 1, Pos(';', user) - 1);
+    end;
+    s := TSession.Create(KindFromId(scheme));
+    try
+      host := rest;
+      p := LastDelimiter(':', rest);
+      if (p > 0) and (p > Pos(']', rest)) and (StrToIntDef(Copy(rest, p + 1, 6), -1) > 0) then
+      begin
+        host := Copy(rest, 1, p - 1);
+        s.Port := StrToInt(Copy(rest, p + 1, 6));
+      end;
+      if (Length(host) > 2) and (host[1] = '[') and (host[Length(host)] = ']') then
+        host := Copy(host, 2, Length(host) - 2);
+      if host = '' then Exit;
+      s.Host := host;
+      s.User := user;
+      if Confirm and not AskYesNo('Open this connection?', Url) then Exit;
+      App.OpenSession(s);
+    finally
+      s.Free;
+    end;
+    Exit;
+  end;
+  if App <> nil then
+    App.SetStatus('Link not opened: "' + scheme + ':" addresses are not allowed from a terminal');
 end;
 
 function TTerminalTab.AddMatch(const Pattern: string): gint;
@@ -1985,6 +2061,8 @@ begin
     if App <> nil then App.SetStatus('Unable to create the log folder ' + dir);
     Exit;
   end;
+  { the logs may show confidential output: the default folder is private }
+  if Settings.LogFolder = '' then fpChmod(dir, &700);
   if FLogName = '' then
   begin
     base := Session.Name;

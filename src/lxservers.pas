@@ -94,6 +94,9 @@ begin
       if Virt <> '/' then Virt := Virt + '/';
       Virt := Virt + stack[i];
     end;
+    { hidden files and folders (.ssh, .gnupg, .config...) are never served }
+    for i := 0 to stack.Count - 1 do
+      if stack[i][1] = '.' then Exit;
   finally
     stack.Free;
   end;
@@ -442,7 +445,7 @@ begin
         if FindFirst(real + '/*', faAnyFile or faDirectory, sr) = 0 then
         begin
           repeat
-            if (sr.Name = '.') or (sr.Name = '..') then Continue;
+            if sr.Name[1] = '.' then Continue;
             if (sr.Attr and faDirectory) <> 0 then list.Add('0' + sr.Name + '/') else list.Add('1' + sr.Name);
           until FindNext(sr) <> 0;
           FindClose(sr);
@@ -727,7 +730,7 @@ begin
       if FindFirst(real + '/*', faAnyFile or faDirectory or faHidden, sr) = 0 then
       begin
         repeat
-          if (sr.Name = '.') or (sr.Name = '..') then Continue;
+          if sr.Name[1] = '.' then Continue;
           if cmd = 'NLST' then data := data + sr.Name + #13#10
           else data := data + ListLine(real, sr.Name, cmd = 'MLSD') + #13#10;
         until FindNext(sr) <> 0;
@@ -1289,6 +1292,10 @@ begin
     Exit;
   end;
   cfg.Root := root;
+  if (K in [svTFTP, svFTP, svHTTP]) and ((root = '/') or (root = ExcludeTrailingPathDelimiter(RealPathOf(HomeDir)))) then
+    if not AskYesNo('Share ' + root + '?', 'Every file of ' + root + ' will be readable by the computers that can reach ' +
+      'this server (hidden files such as .ssh excepted). A dedicated folder (for example ~/Public) is safer.') then
+      Exit;
   case K of
     svHTTP, svFTP:
       begin

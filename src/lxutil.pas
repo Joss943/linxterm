@@ -264,11 +264,42 @@ begin
   Result := TakeStr(g_shell_quote(PChar(S)));
 end;
 
+{ Len bytes from the kernel random generator (unpredictable names of
+  control sockets and secret files); Random only if it is not readable }
+function RandomBytes(Len: Integer): string;
+var
+  fd: cint;
+  n, got: Integer;
+  i: Integer;
+begin
+  SetLength(Result, Len);
+  got := 0;
+  fd := fpOpen('/dev/urandom', O_RDONLY);
+  if fd >= 0 then
+  begin
+    while got < Len do
+    begin
+      n := fpRead(fd, Result[got + 1], Len - got);
+      if n <= 0 then Break;
+      Inc(got, n);
+    end;
+    fpClose(fd);
+  end;
+  for i := got + 1 to Len do
+    Result[i] := Chr(Random(256));
+end;
+
 function NewId: string;
+var
+  r: string;
+  i: Integer;
 begin
   Inc(IdCounter);
-  Result := IntToHex(DateTimeToFileDate(Now), 8) + IntToHex(Random($7FFFFFFF), 8) + IntToHex(IdCounter, 4);
-  Result := LowerCase(Result);
+  r := RandomBytes(8);
+  Result := IntToHex(DateTimeToFileDate(Now), 8);
+  for i := 1 to Length(r) do
+    Result := Result + IntToHex(Ord(r[i]), 2);
+  Result := LowerCase(Result + IntToHex(IdCounter, 4));
 end;
 
 function RandomToken(Len: Integer): string;
@@ -276,10 +307,12 @@ const
   Chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
 var
   i: Integer;
+  r: string;
 begin
+  r := RandomBytes(Len);
   SetLength(Result, Len);
   for i := 1 to Len do
-    Result[i] := Chars[Random(Length(Chars)) + 1];
+    Result[i] := Chars[Ord(r[i]) mod Length(Chars) + 1];
 end;
 
 function WriteAllFd(Fd: cint; const Data: string): Boolean;

@@ -109,6 +109,9 @@ begin
   if (desk = '') or not DirectoryExists(desk) then desk := HomeDir + '/Desktop';
   if not DirectoryExists(desk) then ForceDirectories(desk);
   nm := Sess.DisplayName;
+  { one line only: a name must not add keys (Exec=...) to the launcher }
+  for i := 1 to Length(nm) do
+    if nm[i] < ' ' then nm[i] := ' ';
   fn := '';
   for i := 1 to Length(nm) do
     if nm[i] in ['A'..'Z', 'a'..'z', '0'..'9', '-', '_', '.'] then fn := fn + nm[i] else fn := fn + '_';
@@ -905,8 +908,10 @@ begin
     end
     else if pw <> '' then
     begin
-      StorePassword(s.PasswordKey, pw);
-      s.HasPassword := True;
+      s.HasPassword := StorePassword(s.PasswordKey, pw);
+      if not s.HasPassword then
+        MsgWarning('Password not saved', 'The GNOME keyring is not available: the password will be asked at each ' +
+          'connection. (Settings > Configuration > Misc can allow an obfuscated password file instead.)');
     end;
   end;
   if p^.X11 <> nil then s.X11 := gtk_toggle_button_get_active(p^.X11);

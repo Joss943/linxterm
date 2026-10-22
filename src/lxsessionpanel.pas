@@ -693,10 +693,7 @@ begin
   c.Name := Store.UniqueName(s.DisplayName + ' - copy');
   c.HasPassword := False;
   if s.HasPassword and LookupPassword(s.PasswordKey, pw) then
-  begin
-    StorePassword(c.PasswordKey, pw);
-    c.HasPassword := True;
-  end;
+    c.HasPassword := StorePassword(c.PasswordKey, pw);
   Store.Add(c);
   Store.Save;
   Rebuild;

@@ -75,7 +75,9 @@ type
     FFullscreen: Boolean;
     FQuitting: Boolean;
     FMenuSidebar, FMenuToolbar, FMenuMenubar, FMenuStatusbar: Pointer;
-    FMenuSkinLight, FMenuSkinDark: Pointer;
+    FMenuSkinLight, FMenuSkinDark, FMenuSkinSystem: Pointer;
+    FDesktopIface: Pointer;   { GSettings org.gnome.desktop.interface (automatic skin) }
+    FTermCss: Pointer;        { inner margin of the terminals }
     FTestCmds: TStringList;
     FTestIndex: Integer;
     FTestShotCount: Integer;
@@ -212,7 +214,8 @@ const
     '.lx-sidepanel treeview { background-color: #ffffff; }'#10 +
     'notebook.lx-tabs > header { background-color: #f0f0f0; border-bottom: 1px solid #b9b9b9; padding: 2px 0 0 0; }'#10 +
     'notebook.lx-tabs > header > tabs > tab { padding: 2px 6px; min-height: 22px; margin: 0 1px; background: #e6e6e6; border: 1px solid #c8c8c8; border-bottom: none; border-radius: 3px 3px 0 0; }'#10 +
-    'notebook.lx-tabs > header > tabs > tab:checked { background: #2b2b2b; border-color: #2b2b2b; }'#10 +
+    'notebook.lx-tabs > header > tabs > tab:checked { background: #2b2b2b; border-color: #2b2b2b; box-shadow: inset 0 2px #1a73e8; }'#10 +
+    'notebook.lx-tabs > header > tabs > tab:hover:not(:checked) { background: #f4f4f4; }'#10 +
     'notebook.lx-tabs > header > tabs > tab:checked label { color: #ffffff; }'#10 +
     'notebook.lx-tabs > header > tabs > tab:checked .lx-tab-close image { color: #ffffff; }'#10 +
     '.lx-tab-close { padding: 0; min-height: 14px; min-width: 14px; margin-left: 4px; }'#10 +
@@ -240,12 +243,15 @@ const
     '.lx-monitor levelbar block.lx-warn { background-color: #fb8c00; border-color: #ef6c00; }'#10 +
     '.lx-monitor levelbar block.lx-crit { background-color: #e53935; border-color: #c62828; }'#10 +
     '.lx-searchbar { background-color: #f3f3f3; }'#10 +
-    '.lx-home { background-color: #ffffff; }'#10 +
+    '.lx-home { background-color: #ffffff; background-image: linear-gradient(to bottom, #eef3fa, #ffffff 45%); }'#10 +
     '.lx-home-title { font-size: 26pt; font-weight: bold; color: #1b2a40; }'#10 +
     '.lx-home-sub { color: #6b6b6b; }'#10 +
-    '.lx-home-big { padding: 10px 20px; font-size: 11pt; }'#10 +
-    '.lx-home list { background-color: #ffffff; border: 1px solid #e2e2e2; }'#10 +
+    '.lx-home-big { padding: 10px 20px; font-size: 11pt; border-radius: 8px; }'#10 +
+    '.lx-home-big:hover { box-shadow: 0 2px 8px rgba(26, 115, 232, 0.25); border-color: #8ab4f8; }'#10 +
+    '.lx-home list { background-color: #ffffff; border: 1px solid #e2e2e2; border-radius: 6px; }'#10 +
     '.lx-home list row { padding: 4px 8px; }'#10 +
+    '.lx-home list row:hover { background-color: #eef4fc; }'#10 +
+    '.lx-term-scroll slider { min-width: 7px; border-radius: 4px; }'#10 +
     '.lx-home-caption { font-weight: bold; color: #1b2a40; }'#10 +
     '.lx-kind-row button { padding: 4px 6px; min-width: 58px; border-radius: 0; border: 1px solid transparent; }'#10 +
     '.lx-kind-row button:checked { background: #cce8ff; border-color: #99d1ff; }'#10 +
@@ -276,7 +282,8 @@ const
     '.lx-sidepanel { background-color: #1e1e1e; border: 1px solid #46566a; }'#10 +
     'notebook.lx-tabs > header { background-color: #232323; border-bottom: 1px solid #111; padding: 2px 0 0 0; }'#10 +
     'notebook.lx-tabs > header > tabs > tab { padding: 2px 6px; min-height: 22px; margin: 0 1px; background: #333; border: 1px solid #444; border-bottom: none; border-radius: 3px 3px 0 0; }'#10 +
-    'notebook.lx-tabs > header > tabs > tab:checked { background: #000000; border-color: #555; }'#10 +
+    'notebook.lx-tabs > header > tabs > tab:checked { background: #000000; border-color: #555; box-shadow: inset 0 2px #4c8dff; }'#10 +
+    'notebook.lx-tabs > header > tabs > tab:hover:not(:checked) { background: #3b3b3b; }'#10 +
     '.lx-tab-close { padding: 0; min-height: 14px; min-width: 14px; margin-left: 4px; }'#10 +
     '.lx-tabmark { min-width: 4px; min-height: 16px; border-radius: 2px; margin-right: 1px; }'#10 +
     '.lx-tabmark.red { background-color: #e53935; }'#10 +
@@ -301,12 +308,15 @@ const
     '.lx-monitor levelbar block.lx-ok { background-color: #43a047; border-color: #2e7d32; }'#10 +
     '.lx-monitor levelbar block.lx-warn { background-color: #fb8c00; border-color: #ef6c00; }'#10 +
     '.lx-monitor levelbar block.lx-crit { background-color: #e53935; border-color: #c62828; }'#10 +
-    '.lx-home { background-color: #1e1e1e; }'#10 +
+    '.lx-home { background-color: #1e1e1e; background-image: linear-gradient(to bottom, #252b34, #1e1e1e 45%); }'#10 +
     '.lx-home-title { font-size: 26pt; font-weight: bold; color: #e8eef7; }'#10 +
     '.lx-home-sub { color: #a0a0a0; }'#10 +
-    '.lx-home-big { padding: 10px 20px; font-size: 11pt; }'#10 +
-    '.lx-home list { border: 1px solid #3a3a3a; }'#10 +
+    '.lx-home-big { padding: 10px 20px; font-size: 11pt; border-radius: 8px; }'#10 +
+    '.lx-home-big:hover { box-shadow: 0 2px 8px rgba(76, 141, 255, 0.30); border-color: #4c8dff; }'#10 +
+    '.lx-home list { border: 1px solid #3a3a3a; border-radius: 6px; }'#10 +
     '.lx-home list row { padding: 4px 8px; }'#10 +
+    '.lx-home list row:hover { background-color: #2c3440; }'#10 +
+    '.lx-term-scroll slider { min-width: 7px; border-radius: 4px; }'#10 +
     '.lx-home-caption { font-weight: bold; color: #e8eef7; }'#10 +
     '.lx-kind-row button { padding: 4px 6px; min-width: 58px; border-radius: 0; border: 1px solid transparent; }'#10 +
     '.lx-kind-row button:checked { background: #2f5f8f; border-color: #4f86bd; }'#10 +
@@ -552,6 +562,22 @@ begin
     MainWin.ApplySkin;
   end;
 end;
+procedure CbSkinSystem(item: Pointer; data: gpointer); cdecl;
+begin
+  if gtk_check_menu_item_get_active(item) then
+  begin
+    Settings.Skin := 'system';
+    Settings.Save;
+    MainWin.ApplySkin;
+  end;
+end;
+
+{ the desktop switched between light and dark }
+procedure ColorSchemeChanged(gsettings: Pointer; key: PChar; data: gpointer); cdecl;
+begin
+  if (MainWin <> nil) and (Settings.Skin = 'system') then MainWin.ApplySkin;
+end;
+
 procedure CbToggleSidebarKey(item: Pointer; data: gpointer); cdecl;
 begin
   Settings.ShowSidebar := not Settings.ShowSidebar;
@@ -1729,8 +1755,30 @@ var
   dark: Boolean;
   err: PGError;
   css: string;
+  src, schema: Pointer;
 begin
   dark := Settings.Skin = 'dark';
+  if Settings.Skin = 'system' then
+  begin
+    { "Automatic": the color-scheme preference of the desktop (GNOME) }
+    if FDesktopIface = nil then
+    begin
+      src := g_settings_schema_source_get_default;
+      schema := nil;
+      if src <> nil then schema := g_settings_schema_source_lookup(src, 'org.gnome.desktop.interface', True);
+      if schema <> nil then
+      begin
+        if g_settings_schema_has_key(schema, 'color-scheme') then
+        begin
+          FDesktopIface := g_settings_new('org.gnome.desktop.interface');
+          Connect(FDesktopIface, 'changed::color-scheme', @ColorSchemeChanged, nil);
+        end;
+        g_settings_schema_unref(schema);
+      end;
+    end;
+    if FDesktopIface <> nil then
+      dark := TakeStr(g_settings_get_string(FDesktopIface, 'color-scheme')) = 'prefer-dark';
+  end;
   g_object_set(gtk_settings_get_default, 'gtk-theme-name', PChar('Adwaita'),
     'gtk-application-prefer-dark-theme', GBool(dark), nil);
   if FCss <> nil then
@@ -1745,15 +1793,25 @@ begin
   if err <> nil then
     WriteLn(StdErr, 'CSS error: ', ErrMsg(err));
   gtk_style_context_add_provider_for_screen(gdk_screen_get_default, FCss, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+  if FTermCss = nil then
+  begin
+    { VTE sets "padding: 1px" on the widget itself: a higher priority is needed }
+    FTermCss := gtk_css_provider_new;
+    gtk_css_provider_load_from_data(FTermCss, 'vte-terminal { padding: 5px 8px; }', -1, nil);
+    gtk_style_context_add_provider_for_screen(gdk_screen_get_default, FTermCss, 800 { GTK_STYLE_PROVIDER_PRIORITY_USER });
+  end;
   { keep the two "Skin" radio items of the View menu consistent }
   if FMenuSkinLight <> nil then
   begin
     g_signal_handlers_block_by_func(FMenuSkinLight, @CbSkinLight, nil);
     g_signal_handlers_block_by_func(FMenuSkinDark, @CbSkinDark, nil);
-    gtk_check_menu_item_set_active(FMenuSkinLight, not dark);
-    gtk_check_menu_item_set_active(FMenuSkinDark, dark);
+    g_signal_handlers_block_by_func(FMenuSkinSystem, @CbSkinSystem, nil);
+    gtk_check_menu_item_set_active(FMenuSkinLight, Settings.Skin = 'light');
+    gtk_check_menu_item_set_active(FMenuSkinDark, Settings.Skin = 'dark');
+    gtk_check_menu_item_set_active(FMenuSkinSystem, Settings.Skin = 'system');
     g_signal_handlers_unblock_by_func(FMenuSkinLight, @CbSkinLight, nil);
     g_signal_handlers_unblock_by_func(FMenuSkinDark, @CbSkinDark, nil);
+    g_signal_handlers_unblock_by_func(FMenuSkinSystem, @CbSkinSystem, nil);
   end;
 end;
 
@@ -1828,7 +1886,7 @@ begin
   sub := NewSubMenu(m, '_Skin', 'preferences-desktop-theme');
   light := gtk_check_menu_item_new_with_label('Light (MobaXterm classic)');
   gtk_check_menu_item_set_draw_as_radio(light, True);
-  gtk_check_menu_item_set_active(light, Settings.Skin <> 'dark');
+  gtk_check_menu_item_set_active(light, Settings.Skin = 'light');
   Connect(light, 'toggled', @CbSkinLight, nil);
   gtk_menu_shell_append(sub, light);
   dark := gtk_check_menu_item_new_with_label('Dark');
@@ -1836,6 +1894,11 @@ begin
   gtk_check_menu_item_set_active(dark, Settings.Skin = 'dark');
   Connect(dark, 'toggled', @CbSkinDark, nil);
   gtk_menu_shell_append(sub, dark);
+  FMenuSkinSystem := gtk_check_menu_item_new_with_label('Automatic (follows the light / dark mode of the desktop)');
+  gtk_check_menu_item_set_draw_as_radio(FMenuSkinSystem, True);
+  gtk_check_menu_item_set_active(FMenuSkinSystem, Settings.Skin = 'system');
+  Connect(FMenuSkinSystem, 'toggled', @CbSkinSystem, nil);
+  gtk_menu_shell_append(sub, FMenuSkinSystem);
   FMenuSkinLight := light;
   FMenuSkinDark := dark;
 
@@ -2506,8 +2569,16 @@ var
   tab: TTabPage;
   c: TSession;
   o: TJSONObject;
+  err: string;
 begin
   if S = nil then Exit;
+  { every way of opening a session goes through here: refuse the targets that
+    ssh / FreeRDP could take for options }
+  if not CheckSessionTarget(S, err) then
+  begin
+    MsgError('Unsafe session settings', err);
+    Exit;
+  end;
   c := S.Clone;
   tab := nil;
   case c.Kind of
@@ -3614,7 +3685,7 @@ begin
         NewMenuSeparator(menu);
         light := gtk_check_menu_item_new_with_label('Light skin');
         gtk_check_menu_item_set_draw_as_radio(light, True);
-        gtk_check_menu_item_set_active(light, Settings.Skin <> 'dark');
+        gtk_check_menu_item_set_active(light, Settings.Skin = 'light');
         Connect(light, 'toggled', @CbSkinLight, nil);
         gtk_menu_shell_append(menu, light);
         dark := gtk_check_menu_item_new_with_label('Dark skin');
@@ -3622,6 +3693,11 @@ begin
         gtk_check_menu_item_set_active(dark, Settings.Skin = 'dark');
         Connect(dark, 'toggled', @CbSkinDark, nil);
         gtk_menu_shell_append(menu, dark);
+        item := gtk_check_menu_item_new_with_label('Automatic skin (light / dark mode of the desktop)');
+        gtk_check_menu_item_set_draw_as_radio(item, True);
+        gtk_check_menu_item_set_active(item, Settings.Skin = 'system');
+        Connect(item, 'toggled', @CbSkinSystem, nil);
+        gtk_menu_shell_append(menu, item);
       end;
     MENU_SPLIT:
       begin
@@ -4027,6 +4103,12 @@ begin
   end
   else if cmd = 'expand' then FSessions.ExpandAll
   else if cmd = 'tilelocal' then NewTerminalInTile(StrToIntDef(arg, 0))
+  else if cmd = 'openlink' then
+  begin
+    t := CurrentTab;
+    if t is TTerminalTab then TTerminalTab(t).OpenLink(arg, False);
+  end
+  else if cmd = 'tabcount' then WriteLn('[test] tabs=', FTabs.Count, ' status=', CStr(gtk_label_get_text(FStatusLabel)))
   else if cmd = 'qc' then
   begin
     { qc <text>: types in the quick connect entry and lists the completions }

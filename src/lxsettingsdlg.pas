@@ -97,7 +97,7 @@ var
   x11, xinfo: Pointer;
   keepalive, compress, hostkey, sftpAuto, follow, monitor, dlDir: Pointer;
   skinC, showMenu, showTool, showSide, showStatus: Pointer;
-  keyring: Pointer;
+  keyring, pwFile: Pointer;
   shells: TStringArray;
   i, r: Integer;
   disp: string;
@@ -303,6 +303,7 @@ begin
   skinC := gtk_combo_box_text_new;
   gtk_combo_box_text_append(skinC, 'light', 'Light (classic)');
   gtk_combo_box_text_append(skinC, 'dark', 'Dark');
+  gtk_combo_box_text_append(skinC, 'system', 'Automatic (follows the light / dark mode of the desktop)');
   if not gtk_combo_box_set_active_id(skinC, PChar(Settings.Skin)) then gtk_combo_box_set_active(skinC, 0);
   Labeled(g, r, 'Skin', skinC);
   Inc(r);
@@ -317,12 +318,15 @@ begin
 
   { ---- Misc ---- }
   g := NewPage;
-  keyring := Check(g, 0, 'Store passwords in the GNOME keyring (libsecret)', Settings.UseKeyring);
-  xinfo := NewMarkupLabel('<small>When the keyring is not available, passwords are stored in ' +
-    MarkupEscape(ConfigDir) + '/passwords.json (readable by your user only).</small>', 0);
+  keyring := Check(g, 0, 'Store passwords in the GNOME keyring (libsecret, encrypted with your session password)', Settings.UseKeyring);
+  pwFile := Check(g, 1, 'When the keyring is not available, keep the passwords in a file (not recommended)', Settings.PasswordFile);
+  xinfo := NewMarkupLabel('<small>That file (' + MarkupEscape(ConfigDir) + '/passwords.json, readable by your user only) ' +
+    'is only <b>obfuscated, not encrypted</b>. Without keyring and without this option, passwords are never written ' +
+    'to disk: they are asked at each connection. Passwords found in that file move to the keyring as soon as it is ' +
+    'available.</small>', 0);
   gtk_label_set_line_wrap(xinfo, True);
-  gtk_label_set_max_width_chars(xinfo, 70);
-  gtk_grid_attach(g, xinfo, 0, 1, 3, 1);
+  gtk_label_set_max_width_chars(xinfo, 80);
+  gtk_grid_attach(g, xinfo, 0, 2, 3, 1);
   gtk_notebook_append_page(nb, g, TabLabel('Misc', 'applications-utilities'));
 
   gtk_box_pack_start(area, nb, True, True, 0);
@@ -381,6 +385,7 @@ begin
     Settings.ShowSidebar := gtk_toggle_button_get_active(showSide);
     Settings.ShowStatusbar := gtk_toggle_button_get_active(showStatus);
     Settings.UseKeyring := gtk_toggle_button_get_active(keyring);
+    Settings.PasswordFile := gtk_toggle_button_get_active(pwFile);
     if Settings.Scrollback < 100 then Settings.Scrollback := 100;
     Settings.Save;
     App.SettingsChanged;

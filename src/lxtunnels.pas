@@ -583,10 +583,7 @@ begin
         T.HasPassword := False;
       end
       else if pw <> '' then
-      begin
-        StorePassword('tunnel:' + T.Id, pw);
-        T.HasPassword := True;
-      end;
+        T.HasPassword := StorePassword('tunnel:' + T.Id, pw);
       Result := True;
       Break;
     end;

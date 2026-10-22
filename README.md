@@ -41,7 +41,8 @@ sur le moteur C de PuTTY).
   [pc.fedora] ➤
   ```
   (flèche verte, ou rouge si la commande précédente a échoué).
-- Thème clair (classique) ou sombre.
+- Thème clair (classique), sombre ou **automatique** (suit le mode clair / sombre du bureau
+  GNOME, en direct) ; marges intérieures du terminal, onglet actif souligné, survols.
 
 ## Types de sessions (fenêtre « Session settings »)
 
@@ -150,6 +151,31 @@ Les mots de passe ne sont jamais importés.
 - **X server** : utilise le serveur X du bureau (Xwayland / Xorg) pour le X11-forwarding.
 - Mots de passe stockés dans le **trousseau GNOME** (libsecret).
 
+## Sécurité
+
+- **Mots de passe** : dans le trousseau GNOME (chiffré). Sans trousseau, ils ne sont **jamais
+  écrits sur le disque** (demandés à chaque connexion) sauf si vous autorisez le fichier
+  obfusqué (*Settings > Configuration > Misc*) ; ceux d'un ancien fichier passent dans le
+  trousseau dès qu'il est disponible. Transmis à ssh par un fichier à usage unique (0600, dossier
+  privé 0700, création exclusive), à FreeRDP 3 par l'environnement privé du processus.
+- **Injection d'options** refusée : un nom d'hôte, d'utilisateur ou de passerelle qui commence
+  par `-` ou contient des caractères du shell (session importée, Quick connect, lien) ne peut
+  pas devenir une option de ssh, mosh ou FreeRDP (`-oProxyCommand=…`).
+- **Import** : les commandes locales et options expertes (ssh / FreeRDP) d'un fichier de
+  sessions reçu sont supprimées et signalées : ouvrir une session importée n'exécute rien sur
+  votre ordinateur.
+- **Liens du terminal** : seuls http(s), ftp et mailto s'ouvrent dans le navigateur ; ssh://,
+  sftp://, rdp://, vnc://, telnet:// ouvrent une session (après les mêmes vérifications) ;
+  `file://` seulement depuis un terminal local et après confirmation ; les liens OSC 8 (dont le
+  texte peut masquer la vraie cible) demandent confirmation en affichant l'adresse réelle ;
+  `javascript:`, `data:`… sont refusés.
+- **Serveurs** : les fichiers et dossiers cachés (`.ssh`, `.gnupg`, `.env`…) ne sont jamais
+  servis ni modifiables (HTTP, FTP, TFTP), les `../` et liens symboliques sortant du dossier
+  sont refusés, et partager tout le dossier personnel ou `/` demande confirmation.
+- Collage de plusieurs lignes confirmé, journaux en 0600 dans un dossier privé, identifiants et
+  noms de fichiers secrets tirés de `/dev/urandom`, fichiers temporaires dans le dossier privé,
+  raccourcis de bureau protégés contre les noms piégés, certificats RDP en *trust on first use*.
+
 ## Raccourcis clavier
 
 | Raccourci | Action |
@@ -210,6 +236,12 @@ Dans `~/.config/linxterm/` : `settings.json`, `sessions.json`, `macros.json`,
 
 ### 1.2
 Nouveautés :
+- sécurité : refus de l'injection d'options (hôte, utilisateur, passerelle), import sans
+  commandes locales ni options expertes, liens du terminal filtrés (et confirmés pour OSC 8),
+  serveurs sans fichiers cachés, mots de passe jamais écrits sans trousseau (sauf option),
+  aléa cryptographique, fichier temporaire du navigateur SFTP dans le dossier privé ;
+- visuel : thème automatique (clair / sombre du bureau), marges du terminal, onglet actif
+  souligné, survols, page d'accueil retravaillée ;
 - ouverture d'un dossier de sessions entier (onglets, Split, MultiExec limité au dossier) ;
 - MultiExec : exclusion d'un terminal (case « Receive input ») ;
 - autocomplétion du Quick connect (sessions, récents, `~/.ssh/config`, `known_hosts`) ;

@@ -263,8 +263,9 @@ begin
       end;
     opNewFile:
       begin
-        tmp := GetTempFileName(GetTempDir, 'lxnew');
-        FileClose(FileCreate(tmp));
+        { private folder and exclusive creation: no symlink race in /tmp }
+        tmp := WriteSecretFile('');
+        if tmp = '' then raise Exception.Create('Unable to create a temporary file');
         try
           B.Upload(tmp, Paths[0], nil);
         finally
