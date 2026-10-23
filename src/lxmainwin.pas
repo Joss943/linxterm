@@ -1842,7 +1842,7 @@ begin
   NewImageMenuItem(m, 'Reset font size', 'zoom-original', @CbZoomReset, nil);
   NewMenuSeparator(m);
   sub := NewSubMenu(m, '_Skin', 'preferences-desktop-theme');
-  light := gtk_check_menu_item_new_with_label('Light (MobaXterm classic)');
+  light := gtk_check_menu_item_new_with_label('Light (classic)');
   gtk_check_menu_item_set_draw_as_radio(light, True);
   gtk_check_menu_item_set_active(light, Settings.Skin = 'light');
   Connect(light, 'toggled', @CbSkinLight, nil);

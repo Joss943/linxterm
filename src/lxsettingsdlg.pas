@@ -201,7 +201,7 @@ begin
   Inc(r);
   bold := Check(g, r, 'Show bold text in bright colors', Settings.BoldIsBright);
   Inc(r);
-  mobaPrompt := Check(g, r, 'MobaXterm prompt in local bash terminals ([date]  folder / [user.host] ➤)', Settings.MobaPrompt);
+  mobaPrompt := Check(g, r, 'Two-line prompt in local bash terminals ([date]  folder / [user.host] ➤)', Settings.MobaPrompt);
   Inc(r);
   pasteWarn := Check(g, r, 'Ask for confirmation before pasting several lines', Settings.PasteWarnMultiline);
   Inc(r);

@@ -8,6 +8,11 @@ Telnet, FTP, port série, outils réseau, serveurs, tunnels SSH, macros, MultiEx
 avec GTK 3 pour l'interface et VTE comme moteur de terminal (comme MobaXterm s'appuie
 sur le moteur C de PuTTY).
 
+> Projet indépendant, sans lien avec Mobatek. MobaXterm est une marque de Mobatek, citée
+> uniquement pour décrire l'inspiration et la compatibilité (import des sessions).
+
+![LinXterm](capture-terminal-local.png)
+
 ## Lancer
 
 - Icône **LinXterm** sur le Bureau, ou menu des applications ;
@@ -146,7 +151,7 @@ Les mots de passe ne sont jamais importés.
 - **Macros** : enregistrement des frappes, lecture, édition, raccourcis Ctrl+Maj+F1…F12 et
   Alt+Maj+F1…F12 (sous Linux, Ctrl+Alt+F1…F12 changent de console virtuelle), macro exécutée
   au démarrage d'une session.
-- **Tunneling** (MobaSSHTunnel) : redirections locales, distantes et dynamiques (SOCKS),
+- **Tunneling** (*SSH tunnels*) : redirections locales, distantes et dynamiques (SOCKS),
   éditeur graphique, démarrage automatique.
 - **Servers** : serveurs HTTP, FTP, TFTP, SSH/SFTP (sshd en mode utilisateur), iperf3.
 - **Tools** : éditeur de texte avec coloration syntaxique, générateur de clés SSH,
@@ -292,3 +297,7 @@ Interface :
 - icônes plus grandes dans « Session settings » ;
 - les barres de recherche et de monitoring ne forcent plus l'élargissement de la fenêtre en mode
   Split / MultiExec.
+
+## Licence
+
+LinXterm est distribué sous licence GNU GPL version 3 : voir le fichier [LICENSE](LICENSE).

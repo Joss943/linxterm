@@ -760,7 +760,7 @@ begin
   begin
     Ui := TTunnelsUi.Create;
     Ui.Win := gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(Ui.Win, 'MobaSSHTunnel - SSH tunnels (port forwarding)');
+    gtk_window_set_title(Ui.Win, 'SSH tunnels (port forwarding)');
     gtk_window_set_default_size(Ui.Win, 960, 440);
     gtk_window_set_icon(Ui.Win, IconPixbuf('network-vpn', 64));
     gtk_window_set_transient_for(Ui.Win, MainWindowWidget);

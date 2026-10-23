@@ -32,7 +32,7 @@ const
     (Id: 'processes'; Caption: 'List running processes'; Icon: 'utilities-system-monitor'; Group: 'System'),
     (Id: 'sysmon'; Caption: 'System monitor (top)'; Icon: 'htop'; Group: 'System'),
     (Id: 'hardware'; Caption: 'List hardware devices'; Icon: 'computer'; Group: 'System'),
-    (Id: 'tunnels'; Caption: 'MobaSSHTunnel (port forwarding)'; Icon: 'network-vpn'; Group: 'Network'),
+    (Id: 'tunnels'; Caption: 'SSH tunnels (port forwarding)'; Icon: 'network-vpn'; Group: 'Network'),
     (Id: 'openports'; Caption: 'List open network ports'; Icon: 'gnome-nettool'; Group: 'Network'),
     (Id: 'netscan'; Caption: 'Network scanner'; Icon: 'ipscan'; Group: 'Network'),
     (Id: 'portscan'; Caption: 'Ports scanner'; Icon: 'zenmap'; Group: 'Network'),

@@ -19,7 +19,7 @@ type
 const
   ColorSchemeCount = 13;
   ColorSchemes: array[0..ColorSchemeCount - 1] of TColorScheme = (
-    (Name: 'MobaXterm'; Fg: '#ececec'; Bg: '#000000'; Cursor: '#e8e8e8';
+    (Name: 'Classic'; Fg: '#ececec'; Bg: '#000000'; Cursor: '#e8e8e8';
      Palette: ('#000000', '#cd0000', '#00cd00', '#cdcd00', '#1e90ff', '#cd00cd', '#00cdcd', '#e5e5e5',
                '#7f7f7f', '#ff3030', '#00ff00', '#ffff00', '#5c9cff', '#ff00ff', '#00ffff', '#ffffff')),
     (Name: 'Black on white'; Fg: '#000000'; Bg: '#ffffff'; Cursor: '#000000';

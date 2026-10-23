@@ -521,6 +521,7 @@ begin
   ExtraOptions := JStr(O, 'extra_options', '');
   StartMacro := JStr(O, 'start_macro', '');
   ColorScheme := JStr(O, 'color_scheme', '');
+  if SameText(ColorScheme, 'MobaXterm') then ColorScheme := 'Classic';   { former name }
   TermFont := JStr(O, 'term_font', '');
   LogOutput := JBool(O, 'log_output', False);
   Highlight := JStr(O, 'highlight', '');
@@ -911,7 +912,7 @@ begin
   DefaultShell := '';
   StartDir := '';
   FontName := 'Monospace 11';
-  ColorScheme := 'MobaXterm';
+  ColorScheme := 'Classic';
   CursorShape := VTE_CURSOR_SHAPE_BLOCK;
   CursorBlink := True;
   Scrollback := 10000;
@@ -976,6 +977,7 @@ begin
     StartDir := JStr(o, 'start_dir', StartDir);
     FontName := JStr(o, 'font', FontName);
     ColorScheme := JStr(o, 'color_scheme', ColorScheme);
+    if SameText(ColorScheme, 'MobaXterm') then ColorScheme := 'Classic';   { former name }
     CursorShape := JInt(o, 'cursor_shape', CursorShape);
     CursorBlink := JBool(o, 'cursor_blink', CursorBlink);
     Scrollback := JInt(o, 'scrollback', Scrollback);
