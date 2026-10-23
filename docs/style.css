@@ -147,6 +147,8 @@ kbd {
 }
 .feature h3 { margin: 16px 0 8px; font-size: 18px; }
 .feature p { margin: 0; color: var(--muted); font-size: 15px; }
+.privacy .feature h3 { margin-top: 0; }
+.privacy + .sub { margin-top: 40px; }
 
 /* gallery */
 .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
@@ -211,7 +213,7 @@ th { font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; color: 
 .guide p { margin: 0; color: var(--muted); font-size: 15px; }
 
 /* call to action and footer */
-.section-cta { padding: 56px 0; background: var(--bg-alt); border-top: 1px solid var(--border); }
+.section-cta { padding: 56px 0; border-top: 1px solid var(--border); }
 .cta { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .cta p { margin: 8px 0 0; color: var(--muted); max-width: 620px; }
 .site-footer { padding: 28px 0 40px; border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; }

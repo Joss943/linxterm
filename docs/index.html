@@ -39,6 +39,7 @@
       <a href="#compatibilite">Compatibilité</a>
       <a href="#installation">Installation</a>
       <a href="#prise-en-main">Prise en main</a>
+      <a href="#confidentialite">Confidentialité</a>
     </nav>
     <div class="header-actions">
       <div class="lang" aria-label="Langue">
@@ -173,14 +174,14 @@
             <tr><td>Fedora</td><td>40 et suivantes</td><td><span class="badge badge-ok">Testé</span> Fedora 44, GNOME</td></tr>
             <tr><td>Ubuntu, Kubuntu, Xubuntu…</td><td>24.04 LTS et suivantes</td><td><span class="badge">Compatible</span></td></tr>
             <tr><td>Linux Mint, Pop!_OS, Zorin OS</td><td>basées sur Ubuntu 24.04</td><td><span class="badge">Compatible</span></td></tr>
-            <tr><td>Debian</td><td>13 « trixie » et suivantes</td><td><span class="badge">Compatible</span></td></tr>
+            <tr><td>Debian</td><td>13 «&nbsp;trixie&nbsp;» et suivantes</td><td><span class="badge">Compatible</span></td></tr>
             <tr><td>Arch Linux, Manjaro, EndeavourOS</td><td>à jour</td><td><span class="badge">Compatible</span></td></tr>
             <tr><td>openSUSE</td><td>Tumbleweed, Leap 16</td><td><span class="badge">Compatible</span></td></tr>
             <tr><td>RHEL, AlmaLinux, Rocky Linux</td><td>10</td><td><span class="badge">Compatible</span> Free Pascal depuis freepascal.org</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="note">« Compatible » : les prérequis sont remplis, mais l'application n'y a pas encore été
+      <p class="note">«&nbsp;Compatible&nbsp;» : les prérequis sont remplis, mais l'application n'y a pas encore été
         testée. Non compatibles (VTE trop ancien) : Debian 12, Ubuntu 22.04, Linux Mint 21,
         RHEL / Alma / Rocky 9 et openSUSE Leap 15. Les processeurs ARM ne sont pas pris en charge.</p>
     </div>
@@ -300,6 +301,61 @@ cd linxterm
     </div>
   </section>
 
+  <section id="confidentialite" class="section section-alt">
+    <div class="wrap">
+      <h2>Confidentialité et RGPD</h2>
+      <p class="section-lead">LinXterm ne collecte aucune donnée personnelle : tout ce qu'il
+        enregistre reste sur votre ordinateur, et rien n'est transmis à son auteur.</p>
+      <div class="features privacy">
+        <article class="feature">
+          <h3>Aucune collecte</h3>
+          <p>Pas de compte, pas de télémétrie, pas de statistiques d'utilisation, pas de publicité.
+            LinXterm ne contacte aucun serveur de lui-même : il se connecte uniquement aux machines
+            que vous ouvrez (SSH, RDP, VNC…) et, si vous le demandez, aux dépôts de votre
+            distribution (bouton <strong>Packages</strong>).</p>
+        </article>
+        <article class="feature">
+          <h3>Données gardées sur votre ordinateur</h3>
+          <p>Dans <code>~/.config/linxterm/</code> : réglages, sessions (nom, serveur, utilisateur,
+            options), macros, tunnels, serveurs, sessions récentes et onglets à rouvrir. Les fichiers
+            ne sont lisibles que par vous.</p>
+        </article>
+        <article class="feature">
+          <h3>Mots de passe</h3>
+          <p>Rangés dans le trousseau du bureau (GNOME Keyring, KWallet) sous le nom
+            «&nbsp;LinXterm password&nbsp;», jamais écrits en clair, jamais exportés ni importés. Sans
+            trousseau, un fichier masqué n'est utilisé que si vous l'activez.</p>
+        </article>
+        <article class="feature">
+          <h3>Journaux de session</h3>
+          <p>Désactivés par défaut. Une fois activés, ils sont écrits dans
+            <code>~/Documents/LinXterm/logs</code> (ou le dossier choisi), dossier privé. Ils peuvent
+            contenir des données personnelles affichées dans vos terminaux : supprimez-les quand ils
+            ne servent plus.</p>
+        </article>
+        <article class="feature">
+          <h3>Ce site</h3>
+          <p>Aucun cookie, aucune mesure d'audience, aucune ressource externe. Seul votre choix de
+            langue est gardé dans votre navigateur, sans jamais être transmis. Le site est hébergé
+            par GitHub Pages : GitHub peut enregistrer des données techniques (adresse IP) pour la
+            sécurité du service, selon sa
+            <a href="https://docs.github.com/fr/site-policy/privacy-policies/github-general-privacy-statement">déclaration de confidentialité</a>.</p>
+        </article>
+        <article class="feature">
+          <h3>Vos droits</h3>
+          <p>L'auteur ne détient aucune donnée vous concernant : il n'y a rien à consulter, corriger
+            ou effacer de son côté. Si vous utilisez LinXterm au travail, votre organisation reste
+            responsable des données qu'elle traite avec (journaux, sessions). Une question :
+            <a href="https://github.com/Joss943/linxterm/issues">issues GitHub du projet</a>.</p>
+        </article>
+      </div>
+      <h3 class="sub">Effacer toutes les données de LinXterm</h3>
+      <div class="code"><pre><code>rm -rf ~/.config/linxterm ~/Documents/LinXterm/logs</code></pre></div>
+      <p class="note">Supprimez ensuite les entrées «&nbsp;LinXterm password&nbsp;» dans l'application
+        <em>Mots de passe et clés</em> (Seahorse) ou dans KWallet.</p>
+    </div>
+  </section>
+
   <section class="section section-cta">
     <div class="wrap cta">
       <div>
@@ -317,7 +373,8 @@ cd linxterm
   <div class="wrap footer-inner">
     <p>LinXterm, par <a href="https://github.com/Joss943">Joss943</a> · licence
       <a href="https://github.com/Joss943/linxterm/blob/main/LICENSE">GPL-3.0</a> ·
-      <a href="https://github.com/Joss943/linxterm#readme">documentation complète</a></p>
+      <a href="https://github.com/Joss943/linxterm#readme">documentation complète</a> ·
+      <a href="#confidentialite">confidentialité et RGPD</a></p>
     <p class="disclaimer">Projet indépendant, sans lien avec Mobatek. MobaXterm est une marque de
       Mobatek, citée uniquement pour décrire l'inspiration et la compatibilité.</p>
   </div>

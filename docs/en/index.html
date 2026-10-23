@@ -30,6 +30,7 @@
       <a href="#compatibility">Compatibility</a>
       <a href="#installation">Installation</a>
       <a href="#getting-started">Getting started</a>
+      <a href="#privacy">Privacy</a>
     </nav>
     <div class="header-actions">
       <div class="lang" aria-label="Language">
@@ -290,6 +291,59 @@ cd linxterm
     </div>
   </section>
 
+  <section id="privacy" class="section section-alt">
+    <div class="wrap">
+      <h2>Privacy and GDPR</h2>
+      <p class="section-lead">LinXterm collects no personal data: everything it saves stays on your
+        computer, and nothing is sent to its author.</p>
+      <div class="features privacy">
+        <article class="feature">
+          <h3>No data collection</h3>
+          <p>No account, no telemetry, no usage statistics, no ads. LinXterm never contacts a server
+            on its own: it only connects to the machines you open (SSH, RDP, VNC…) and, when you ask
+            for it, to your distribution's repositories (<strong>Packages</strong> button).</p>
+        </article>
+        <article class="feature">
+          <h3>Data kept on your computer</h3>
+          <p>In <code>~/.config/linxterm/</code>: settings, sessions (name, server, user, options),
+            macros, tunnels, servers, recent sessions and tabs to reopen. The files are readable by
+            you only.</p>
+        </article>
+        <article class="feature">
+          <h3>Passwords</h3>
+          <p>Stored in the desktop keyring (GNOME Keyring, KWallet) as “LinXterm password”, never
+            written in plain text, never exported or imported. Without a keyring, an obfuscated file
+            is used only if you turn it on.</p>
+        </article>
+        <article class="feature">
+          <h3>Session logs</h3>
+          <p>Off by default. Once turned on, they are written to
+            <code>~/Documents/LinXterm/logs</code> (or the folder you choose), a private folder. They
+            may contain personal data shown in your terminals: delete them when you no longer need
+            them.</p>
+        </article>
+        <article class="feature">
+          <h3>This website</h3>
+          <p>No cookies, no audience measurement, no external resources. Only your language choice is
+            kept in your browser, and it is never sent anywhere. The site is hosted by GitHub Pages:
+            GitHub may record technical data (IP address) to secure the service, under its
+            <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">privacy statement</a>.</p>
+        </article>
+        <article class="feature">
+          <h3>Your rights</h3>
+          <p>The author holds no data about you: there is nothing to access, correct or erase on their
+            side. If you use LinXterm at work, your organization remains responsible for the data it
+            processes with it (logs, sessions). Any question:
+            <a href="https://github.com/Joss943/linxterm/issues">the project's GitHub issues</a>.</p>
+        </article>
+      </div>
+      <h3 class="sub">Erase all LinXterm data</h3>
+      <div class="code"><pre><code>rm -rf ~/.config/linxterm ~/Documents/LinXterm/logs</code></pre></div>
+      <p class="note">Then delete the “LinXterm password” entries in the <em>Passwords and Keys</em>
+        application (Seahorse) or in KWallet.</p>
+    </div>
+  </section>
+
   <section class="section section-cta">
     <div class="wrap cta">
       <div>
@@ -307,7 +361,8 @@ cd linxterm
   <div class="wrap footer-inner">
     <p>LinXterm, by <a href="https://github.com/Joss943">Joss943</a> ·
       <a href="https://github.com/Joss943/linxterm/blob/main/LICENSE">GPL-3.0</a> license ·
-      <a href="https://github.com/Joss943/linxterm#readme">full documentation</a> (French)</p>
+      <a href="https://github.com/Joss943/linxterm#readme">full documentation</a> (French) ·
+      <a href="#privacy">privacy and GDPR</a></p>
     <p class="disclaimer">Independent project, not affiliated with Mobatek. MobaXterm is a trademark of
       Mobatek, mentioned only to describe the inspiration and compatibility.</p>
   </div>

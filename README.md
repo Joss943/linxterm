@@ -294,6 +294,29 @@ Les mots de passe ne sont jamais importés.
   noms de fichiers secrets tirés de `/dev/urandom`, fichiers temporaires dans le dossier privé,
   raccourcis de bureau protégés contre les noms piégés, certificats RDP en *trust on first use*.
 
+## Confidentialité et RGPD
+
+LinXterm ne collecte aucune donnée personnelle et ne transmet rien à son auteur.
+
+- **Aucune collecte** : pas de compte, de télémétrie, de statistiques ni de publicité. LinXterm ne
+  contacte aucun serveur de lui-même : uniquement les machines que vous ouvrez et, à votre demande,
+  les dépôts de votre distribution (*Packages*).
+- **Données locales** : réglages, sessions, macros, tunnels, serveurs, sessions récentes et onglets
+  à rouvrir dans `~/.config/linxterm/`, fichiers lisibles par vous seul.
+- **Mots de passe** : dans le trousseau du bureau (« LinXterm password »), jamais en clair, jamais
+  exportés ni importés ; fichier masqué seulement si vous l'activez faute de trousseau.
+- **Journaux de session** : désactivés par défaut ; une fois activés, dans
+  `~/Documents/LinXterm/logs` (dossier privé). Ils peuvent contenir des données personnelles
+  affichées dans les terminaux : supprimez-les quand ils ne servent plus.
+- **Site web** : aucun cookie ni mesure d'audience ; seul le choix de langue est gardé dans le
+  navigateur. Hébergement GitHub Pages (données techniques selon la déclaration de confidentialité
+  de GitHub).
+- **Vos droits** : l'auteur ne détient aucune donnée vous concernant. En entreprise, votre
+  organisation reste responsable des données traitées avec LinXterm. Questions : issues GitHub.
+
+Tout effacer : `rm -rf ~/.config/linxterm ~/Documents/LinXterm/logs`, puis supprimer les entrées
+« LinXterm password » dans *Mots de passe et clés* (Seahorse) ou KWallet.
+
 ## Raccourcis clavier
 
 | Raccourci | Action |
