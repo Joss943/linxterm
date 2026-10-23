@@ -12,7 +12,7 @@ uses
 const
   APP_NAME = 'LinXterm';
   APP_ID = 'dev.linxterm.LinXterm';
-  APP_VERSION = '1.2';
+  APP_VERSION = '1.3';
 
 type
   TChildProcess = class;

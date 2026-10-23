@@ -209,7 +209,7 @@ une seule session. Les journaux sont du texte brut, dans `~/Documents/LinXterm/l
 (dossier modifiable), un fichier par session (`nom_AAAAMMJJ_HHMMSS.log`, droits 0600) :
 
 ```
-==== LinXterm 1.2 - SSH session to root@10.0.0.12 - started 2026-10-22 14:45:40 ====
+==== LinXterm 1.3 - SSH session to root@10.0.0.12 - started 2026-10-22 14:45:40 ====
 [2026-10-22 14:45:41] root@web:~$ systemctl restart nginx
 [2026-10-22 14:45:43] root@web:~$
 ```
@@ -378,6 +378,28 @@ Dans `~/.config/linxterm/` : `settings.json`, `sessions.json`, `macros.json`,
 
 ## Historique
 
+### 1.3
+Interface :
+- aucun bouton en double : *Sessions*, *Tools* et *Exit* retirés de la barre d'outils (onglets
+  du panneau latéral, croix de la fenêtre), bouton « + » des onglets, recherche et liens de
+  l'accueil retirés ; dans les menus, chaque commande n'apparaît qu'une fois ;
+- style modernisé dans les deux thèmes : menus et barre d'outils d'un seul tenant, coins
+  arrondis, survols discrets, onglet latéral actif marqué d'un trait bleu, onglet actif relié à
+  son contenu (sombre sur un terminal, clair sur l'accueil), accueil en cartes, arbre des
+  sessions plus aéré ;
+- accueil : Entrée lance un terminal local, aide quand la liste des sessions récentes est vide ;
+- Ctrl+Maj+Q dans la liste des raccourcis ;
+- libellés sans la marque MobaXterm (*SSH tunnels*, thème de couleurs *Classic*, invite
+  *Two-line prompt*), les anciens réglages étant repris automatiquement.
+
+Compilation et documentation :
+- `build.sh` trouve Free Pascal et les bibliothèques sur Fedora / openSUSE, Debian / Ubuntu et
+  Arch, avec un message clair s'il manque quelque chose ;
+- README détaillé (présentation, distributions compatibles, installation, prise en main),
+  rubrique confidentialité et RGPD ;
+- site de présentation en français et en anglais : https://joss943.github.io/linxterm/ ;
+- code publié sous licence GPL-3.0.
+
 ### 1.2
 Nouveautés :
 - sécurité : refus de l'injection d'options (hôte, utilisateur, passerelle), import sans
@@ -385,8 +407,7 @@ Nouveautés :
   serveurs sans fichiers cachés, mots de passe jamais écrits sans trousseau (sauf option),
   aléa cryptographique, fichier temporaire du navigateur SFTP dans le dossier privé ;
 - visuel : thème automatique (clair / sombre du bureau), marges du terminal, onglet actif
-  souligné, survols, page d'accueil retravaillée ; style modernisé sans bouton en double
-  (barre d'outils, accueil, onglets et menus allégés) ;
+  souligné, survols, page d'accueil retravaillée ;
 - ouverture d'un dossier de sessions entier (onglets, Split, MultiExec limité au dossier) ;
 - MultiExec : exclusion d'un terminal (case « Receive input ») ;
 - autocomplétion du Quick connect (sessions, récents, `~/.ssh/config`, `known_hosts`) ;
