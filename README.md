@@ -11,6 +11,8 @@ sur le moteur C de PuTTY).
 > Projet indépendant, sans lien avec Mobatek. MobaXterm est une marque de Mobatek, citée
 > uniquement pour décrire l'inspiration et la compatibilité (import des sessions).
 
+**Site de présentation (français / English) : https://joss943.github.io/linxterm/**
+
 ![LinXterm](capture-terminal-local.png)
 
 ## Présentation

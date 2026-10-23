@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LinXterm · terminal tout-en-un pour Linux</title>
+  <meta name="description" content="LinXterm : terminal à onglets pour Linux avec SSH, SFTP, X11-forwarding, RDP, VNC, outils réseau, serveurs et tunnels SSH dans une seule fenêtre. Logiciel libre (GPL-3.0).">
+  <meta property="og:title" content="LinXterm · terminal tout-en-un pour Linux">
+  <meta property="og:description" content="SSH à onglets, navigateur SFTP, X11, RDP, VNC, outils réseau, Split et MultiExec dans une seule fenêtre. Logiciel libre.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://joss943.github.io/linxterm/">
+  <meta property="og:image" content="https://joss943.github.io/linxterm/img/terminal-sombre.png">
+  <meta name="theme-color" content="#1a73e8">
+  <link rel="alternate" hreflang="fr" href="https://joss943.github.io/linxterm/">
+  <link rel="alternate" hreflang="en" href="https://joss943.github.io/linxterm/en/">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // first visit: English page for browsers that are not in French (the switcher choice wins)
+    (function () {
+      var lang = null;
+      try { lang = localStorage.getItem('lx-lang'); } catch (e) {}
+      var fr = (navigator.languages || [navigator.language || '']).some(function (l) { return /^fr/i.test(l); });
+      if (lang === 'en' || (!lang && !fr)) location.replace('en/');
+    })();
+  </script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="#top" aria-label="LinXterm, retour en haut">
+      <img src="favicon.svg" alt="" width="32" height="32">
+      <span>LinXterm</span>
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#fonctionnalites">Fonctionnalités</a>
+      <a href="#captures">Captures</a>
+      <a href="#compatibilite">Compatibilité</a>
+      <a href="#installation">Installation</a>
+      <a href="#prise-en-main">Prise en main</a>
+    </nav>
+    <div class="header-actions">
+      <div class="lang" aria-label="Langue">
+        <a href="./" hreflang="fr" lang="fr" aria-current="true">FR</a>
+        <a href="en/" hreflang="en" lang="en">EN</a>
+      </div>
+      <a class="btn btn-small" href="https://github.com/Joss943/linxterm">
+      <svg class="gh" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub
+    </a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Logiciel libre pour Linux · version 1.2</p>
+      <h1>Tous vos serveurs, dans une seule fenêtre.</h1>
+      <p class="lead">LinXterm est un terminal à onglets qui réunit SSH, navigateur SFTP, X11-forwarding,
+        bureau à distance RDP et VNC, outils réseau, serveurs et tunnels SSH. Son interface s'inspire
+        de MobaXterm, en version native pour Linux.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#installation">Installer LinXterm</a>
+        <a class="btn" href="https://github.com/Joss943/linxterm">Voir le code sur GitHub</a>
+      </div>
+      <p class="meta">Licence GPL-3.0 · Free Pascal, GTK 3 et VTE · X11 et Wayland</p>
+      <figure class="hero-shot">
+        <img src="img/terminal-sombre.png" width="1366" height="768"
+             alt="Fenêtre de LinXterm en thème sombre : barre d'outils, panneau des sessions et terminal ouvert">
+      </figure>
+    </div>
+  </section>
+
+  <section id="fonctionnalites" class="section">
+    <div class="wrap">
+      <h2>Tout ce qu'il faut pour travailler à distance</h2>
+      <p class="section-lead">Plus besoin de jongler entre un terminal, un client SFTP, un client RDP
+        et une poignée d'outils réseau.</p>
+      <div class="features">
+        <article class="feature">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M12 15h5"/></svg>
+          <h3>Terminaux à onglets</h3>
+          <p>Terminaux locaux et distants, onglets numérotés, détachables et colorables. La vue
+            <strong>Split</strong> affiche 2 ou 4 terminaux, et <strong>MultiExec</strong> tape la même
+            commande sur plusieurs serveurs à la fois.</p>
+        </article>
+        <article class="feature">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+          <h3>Sessions enregistrées</h3>
+          <p>SSH, Telnet, Mosh, RDP, VNC, FTP, SFTP, port série, shell, fichiers et navigateur web,
+            rangés en dossiers. Mots de passe dans le trousseau du bureau. Import depuis MobaXterm,
+            OpenSSH, PuTTY et Remmina.</p>
+        </article>
+        <article class="feature">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M15 8l2 2"/></svg>
+          <h3>SSH complet</h3>
+          <p>X11-forwarding pour afficher les applications graphiques du serveur, passerelle de rebond,
+            clés privées, reconnexion automatique, navigateur SFTP qui suit le terminal et surveillance
+            du serveur (CPU, RAM, disque, réseau).</p>
+        </article>
+        <article class="feature">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 00-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 005.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg>
+          <h3>Outils intégrés</h3>
+          <p>Scanner réseau et de ports, ping graphique, traceroute, ports ouverts, Wake-on-LAN,
+            calculatrice de sous-réseau, générateur de clés SSH, éditeur de texte, comparaison de
+            fichiers et liste des processus.</p>
+        </article>
+        <article class="feature">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><path d="M7 7h.01M7 17h.01"/></svg>
+          <h3>Serveurs et tunnels</h3>
+          <p>Serveurs HTTP, FTP, TFTP, SSH et iperf3 en un clic pour échanger des fichiers sur le
+            réseau local. Tunnels SSH locaux, distants et SOCKS gérés graphiquement, avec démarrage
+            automatique.</p>
+        </article>
+        <article class="feature">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>
+          <h3>Pensé pour le quotidien</h3>
+          <p>Macros, palette de commandes (Ctrl+Maj+P), coloration des erreurs et avertissements,
+            journaux de session, notification à la fin des commandes longues, liens cliquables,
+            thème clair, sombre ou automatique.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="captures" class="section section-alt">
+    <div class="wrap">
+      <h2>Captures d'écran</h2>
+      <p class="section-lead">Cliquez sur une capture pour l'afficher en grand.</p>
+      <div class="gallery">
+        <figure>
+          <a href="img/accueil.png"><img src="img/accueil.png" width="1366" height="768" loading="lazy"
+             alt="Onglet d'accueil en thème clair avec les sessions récentes"></a>
+          <figcaption>L'accueil : terminal local en un clic et sessions récentes.</figcaption>
+        </figure>
+        <figure>
+          <a href="img/multiexec.png"><img src="img/multiexec.png" width="1366" height="768" loading="lazy"
+             alt="Deux terminaux côte à côte en mode MultiExec"></a>
+          <figcaption>Split et MultiExec : une commande, plusieurs serveurs.</figcaption>
+        </figure>
+        <figure>
+          <a href="img/session.png"><img src="img/session.png" width="952" height="689" loading="lazy"
+             alt="Fenêtre Session settings pour une session SSH"></a>
+          <figcaption>Création d'une session : SSH, RDP, VNC, SFTP, série…</figcaption>
+        </figure>
+        <figure>
+          <a href="img/panneaux.png"><img src="img/panneaux.png" width="1160" height="620" loading="lazy"
+             alt="Panneaux latéraux Tools, Macros et Sftp en clair et en sombre"></a>
+          <figcaption>Panneau latéral : outils, macros et navigateur SFTP.</figcaption>
+        </figure>
+        <figure>
+          <a href="img/accueil-sombre.png"><img src="img/accueil-sombre.png" width="1366" height="768" loading="lazy"
+             alt="Onglet d'accueil en thème sombre"></a>
+          <figcaption>Thème sombre, ou automatique selon votre bureau.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="compatibilite" class="section">
+    <div class="wrap">
+      <h2>Distributions compatibles</h2>
+      <p class="section-lead">LinXterm fonctionne sur <strong>Linux x86_64</strong> avec
+        <strong>GTK 3.24</strong> et <strong>VTE 0.76 ou plus récent</strong>, sous X11 comme sous
+        Wayland (GNOME, KDE Plasma, Xfce, Cinnamon…).</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Distribution</th><th>Versions</th><th>État</th></tr></thead>
+          <tbody>
+            <tr><td>Fedora</td><td>40 et suivantes</td><td><span class="badge badge-ok">Testé</span> Fedora 44, GNOME</td></tr>
+            <tr><td>Ubuntu, Kubuntu, Xubuntu…</td><td>24.04 LTS et suivantes</td><td><span class="badge">Compatible</span></td></tr>
+            <tr><td>Linux Mint, Pop!_OS, Zorin OS</td><td>basées sur Ubuntu 24.04</td><td><span class="badge">Compatible</span></td></tr>
+            <tr><td>Debian</td><td>13 « trixie » et suivantes</td><td><span class="badge">Compatible</span></td></tr>
+            <tr><td>Arch Linux, Manjaro, EndeavourOS</td><td>à jour</td><td><span class="badge">Compatible</span></td></tr>
+            <tr><td>openSUSE</td><td>Tumbleweed, Leap 16</td><td><span class="badge">Compatible</span></td></tr>
+            <tr><td>RHEL, AlmaLinux, Rocky Linux</td><td>10</td><td><span class="badge">Compatible</span> Free Pascal depuis freepascal.org</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">« Compatible » : les prérequis sont remplis, mais l'application n'y a pas encore été
+        testée. Non compatibles (VTE trop ancien) : Debian 12, Ubuntu 22.04, Linux Mint 21,
+        RHEL / Alma / Rocky 9 et openSUSE Leap 15. Les processeurs ARM ne sont pas pris en charge.</p>
+    </div>
+  </section>
+
+  <section id="installation" class="section section-alt">
+    <div class="wrap">
+      <h2>Installation</h2>
+      <p class="section-lead">LinXterm se compile en une minute à partir du code source, sans droits
+        administrateur pour l'installation elle-même.</p>
+
+      <ol class="steps">
+        <li>
+          <h3>Installer le compilateur Free Pascal</h3>
+          <p>GTK 3 et VTE sont déjà présents sur les bureaux courants ; aucun paquet de
+            développement n'est nécessaire.</p>
+          <div class="tabs" data-tabs>
+            <div class="tablist" role="tablist" aria-label="Distribution">
+              <button role="tab" aria-selected="true" aria-controls="t-fedora" id="b-fedora">Fedora</button>
+              <button role="tab" aria-selected="false" aria-controls="t-debian" id="b-debian">Ubuntu, Debian, Mint</button>
+              <button role="tab" aria-selected="false" aria-controls="t-arch" id="b-arch">Arch, Manjaro</button>
+              <button role="tab" aria-selected="false" aria-controls="t-suse" id="b-suse">openSUSE</button>
+            </div>
+            <div class="code" role="tabpanel" id="t-fedora" aria-labelledby="b-fedora"><pre><code>sudo dnf install fpc gtk3 vte291</code></pre></div>
+            <div class="code" role="tabpanel" id="t-debian" aria-labelledby="b-debian"><pre><code>sudo apt install fpc libgtk-3-0 libvte-2.91-0</code></pre></div>
+            <div class="code" role="tabpanel" id="t-arch" aria-labelledby="b-arch"><pre><code>sudo pacman -S fpc gtk3 vte3</code></pre></div>
+            <div class="code" role="tabpanel" id="t-suse" aria-labelledby="b-suse"><pre><code>sudo zypper install fpc libgtk-3-0 libvte-2_91-0</code></pre></div>
+          </div>
+        </li>
+        <li>
+          <h3>Télécharger et installer LinXterm</h3>
+          <p>Le programme reste dans son dossier ; un lanceur est ajouté au menu des applications et
+            sur le Bureau.</p>
+          <div class="code"><pre><code>git clone https://github.com/Joss943/linxterm.git
+cd linxterm
+./install.sh</code></pre></div>
+        </li>
+        <li>
+          <h3>Ajouter les outils facultatifs</h3>
+          <p>Certaines fonctions utilisent des programmes externes s'ils sont installés. Si l'un d'eux
+            manque, LinXterm le signale, et le bouton <strong>Packages</strong> de la barre d'outils
+            installe le reste.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Fonction</th><th>Programmes ou bibliothèques</th></tr></thead>
+              <tbody>
+                <tr><td>SSH, SFTP, tunnels</td><td><code>ssh</code>, <code>sftp</code> (OpenSSH), <code>sshpass</code>, <code>mosh</code></td></tr>
+                <tr><td>Bureau à distance RDP</td><td>FreeRDP 3 (<code>xfreerdp3</code> ou <code>sdl-freerdp3</code>)</td></tr>
+                <tr><td>VNC dans un onglet</td><td>GTK-VNC</td></tr>
+                <tr><td>Navigateur web intégré</td><td>WebKitGTK 4.1</td></tr>
+                <tr><td>Coloration syntaxique de l'éditeur</td><td>GtkSourceView 4</td></tr>
+                <tr><td>Mots de passe dans le trousseau</td><td>libsecret (GNOME Keyring, KWallet)</td></tr>
+                <tr><td>Outils réseau</td><td><code>nmap</code>, <code>traceroute</code>, <code>iperf3</code></td></tr>
+                <tr><td>Comparaison, processus</td><td><code>meld</code> ou <code>kdiff3</code>, <code>htop</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="prise-en-main" class="section">
+    <div class="wrap">
+      <h2>Prise en main</h2>
+      <p class="section-lead">Les gestes essentiels, du premier terminal à la gestion de plusieurs
+        serveurs.</p>
+      <ol class="guide">
+        <li><h3>Ouvrir un terminal local</h3>
+          <p>Bouton <em>Start local terminal</em> de l'onglet d'accueil, touche Entrée ou
+            <span class="keys"><kbd>Ctrl</kbd>+<kbd>Maj</kbd>+<kbd>T</kbd></span>.</p></li>
+        <li><h3>Se connecter tout de suite</h3>
+          <p>Tapez <code>utilisateur@serveur</code>, <code>rdp serveur</code> ou
+            <code>sftp serveur</code> dans <strong>Quick connect</strong>, en haut à gauche, puis
+            Entrée. Le champ filtre aussi vos sessions.</p></li>
+        <li><h3>Enregistrer une session</h3>
+          <p>Bouton <strong>Session</strong>, choisissez le type, saisissez le serveur et
+            l'utilisateur. Double-clic dans le panneau <strong>Sessions</strong> pour l'ouvrir,
+            clic droit pour la modifier ou la ranger.</p></li>
+        <li><h3>Transférer des fichiers</h3>
+          <p>Avec une session SSH, l'onglet <strong>Sftp</strong> du panneau latéral affiche les
+            fichiers du serveur : glissez-déposez pour envoyer ou télécharger.</p></li>
+        <li><h3>Lancer une application graphique distante</h3>
+          <p>Avec <em>X11-Forwarding</em> coché (par défaut), tapez par exemple <code>gedit</code>
+            sur le serveur : la fenêtre s'ouvre sur votre bureau.</p></li>
+        <li><h3>Piloter plusieurs serveurs</h3>
+          <p><strong>Split</strong> affiche 2 ou 4 terminaux côte à côte ; <strong>MultiExec</strong>
+            envoie votre saisie à tous. La case <em>Receive input</em> en exclut un.</p></li>
+        <li><h3>Tunnels, serveurs et outils</h3>
+          <p>Boutons <strong>Tunneling</strong> et <strong>Servers</strong> de la barre d'outils,
+            onglet <strong>Tools</strong> du panneau latéral.</p></li>
+        <li><h3>Retrouver une commande</h3>
+          <p><span class="keys"><kbd>Ctrl</kbd>+<kbd>Maj</kbd>+<kbd>P</kbd></span> ouvre la palette : tapez quelques lettres
+            d'une session, d'un onglet ou d'une commande.</p></li>
+        <li><h3>Personnaliser</h3>
+          <p><strong>Settings</strong> pour la police, les couleurs, l'invite et les journaux ;
+            <em>View &gt; Skin</em> pour le thème clair, sombre ou automatique.</p></li>
+      </ol>
+
+      <h3 class="sub">Raccourcis clavier utiles</h3>
+      <div class="table-wrap">
+        <table class="shortcuts">
+          <tbody>
+            <tr><td><span class="keys"><kbd>Ctrl</kbd>+<kbd>Maj</kbd>+<kbd>T</kbd></span></td><td>Nouveau terminal local</td>
+                <td><span class="keys"><kbd>Ctrl</kbd>+<kbd>Maj</kbd>+<kbd>N</kbd></span></td><td>Nouvelle session</td></tr>
+            <tr><td><span class="keys"><kbd>Ctrl</kbd>+<kbd>Maj</kbd>+<kbd>W</kbd></span></td><td>Fermer l'onglet</td>
+                <td><span class="keys"><kbd>Ctrl</kbd>+<kbd>Pg↑</kbd> / <kbd>Pg↓</kbd></span></td><td>Onglet précédent / suivant</td></tr>
+            <tr><td><span class="keys"><kbd>Ctrl</kbd>+<kbd>Maj</kbd>+<kbd>C</kbd> / <kbd>V</kbd></span></td><td>Copier / coller</td>
+                <td><span class="keys"><kbd>Ctrl</kbd>+<kbd>Maj</kbd>+<kbd>F</kbd></span></td><td>Rechercher dans le terminal</td></tr>
+            <tr><td><span class="keys"><kbd>Ctrl</kbd>+<kbd>Maj</kbd>+<kbd>P</kbd></span></td><td>Palette de commandes</td>
+                <td><span class="keys"><kbd>Ctrl</kbd>+<kbd>Maj</kbd>+<kbd>B</kbd></span></td><td>Afficher / masquer le panneau latéral</td></tr>
+            <tr><td><kbd>F11</kbd></td><td>Plein écran</td>
+                <td><span class="keys"><kbd>Ctrl</kbd>+<kbd>Maj</kbd>+<kbd>Q</kbd></span></td><td>Quitter</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-cta">
+    <div class="wrap cta">
+      <div>
+        <h2>Libre et ouvert</h2>
+        <p>LinXterm est publié sous licence GPL-3.0. Le code, l'historique et la documentation
+          complète sont sur GitHub.</p>
+      </div>
+      <a class="btn btn-primary" href="https://github.com/Joss943/linxterm">Ouvrir le dépôt GitHub</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p>LinXterm, par <a href="https://github.com/Joss943">Joss943</a> · licence
+      <a href="https://github.com/Joss943/linxterm/blob/main/LICENSE">GPL-3.0</a> ·
+      <a href="https://github.com/Joss943/linxterm#readme">documentation complète</a></p>
+    <p class="disclaimer">Projet indépendant, sans lien avec Mobatek. MobaXterm est une marque de
+      Mobatek, citée uniquement pour décrire l'inspiration et la compatibilité.</p>
+  </div>
+</footer>
+
+<script>
+  // language switcher: the choice is remembered for the next visits
+  document.querySelectorAll('.lang a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      try { localStorage.setItem('lx-lang', a.getAttribute('hreflang')); } catch (e) {}
+    });
+  });
+
+  // distribution tabs: arrow keys move between tabs, one panel shown at a time
+  document.querySelectorAll('[data-tabs]').forEach(function (box) {
+    var tabs = Array.prototype.slice.call(box.querySelectorAll('[role="tab"]'));
+    function select(tab) {
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute('aria-selected', on);
+        t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      });
+    }
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { select(t); });
+      t.addEventListener('keydown', function (e) {
+        var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (d) { var n = tabs[(i + d + tabs.length) % tabs.length]; select(n); n.focus(); }
+      });
+    });
+    select(tabs[0]);
+  });
+
+  // copy buttons on the command blocks
+  document.querySelectorAll('.code').forEach(function (block) {
+    var btn = document.createElement('button');
+    btn.className = 'copy';
+    btn.type = 'button';
+    btn.textContent = 'Copier';
+    btn.addEventListener('click', function () {
+      var text = block.querySelector('code').textContent;
+      var done = function () {
+        btn.textContent = 'Copié';
+        setTimeout(function () { btn.textContent = 'Copier'; }, 1500);
+      };
+      if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, function () {});
+    });
+    block.appendChild(btn);
+  });
+</script>
+</body>
+</html>
