@@ -3,18 +3,120 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LinXterm · the all-in-one terminal for Linux</title>
-  <meta name="description" content="LinXterm: tabbed terminal for Linux with SSH, SFTP, X11 forwarding, RDP, VNC, network tools, servers and SSH tunnels in a single window. Free software (GPL-3.0).">
-  <meta property="og:title" content="LinXterm · the all-in-one terminal for Linux">
-  <meta property="og:description" content="Tabbed SSH, SFTP browser, X11, RDP, VNC, network tools, Split and MultiExec in a single window. Free software.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://joss943.github.io/linxterm/en/">
-  <meta property="og:image" content="https://joss943.github.io/linxterm/img/terminal-sombre.png">
-  <meta name="theme-color" content="#1a73e8">
+  <title>LinXterm: free SSH terminal for Linux, MobaXterm alternative</title>
+  <meta name="description" content="Free all-in-one terminal for Linux: tabbed SSH, SFTP browser, X11, RDP, VNC, network tools and MultiExec. An open-source MobaXterm alternative (GPL-3.0).">
+  <link rel="canonical" href="https://joss943.github.io/linxterm/en/">
   <link rel="alternate" hreflang="fr" href="https://joss943.github.io/linxterm/">
   <link rel="alternate" hreflang="en" href="https://joss943.github.io/linxterm/en/">
+  <link rel="alternate" hreflang="x-default" href="https://joss943.github.io/linxterm/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LinXterm">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="fr_FR">
+  <meta property="og:title" content="LinXterm: free SSH terminal for Linux, MobaXterm alternative">
+  <meta property="og:description" content="Free all-in-one terminal for Linux: tabbed SSH, SFTP browser, X11, RDP, VNC, network tools and MultiExec. An open-source MobaXterm alternative (GPL-3.0).">
+  <meta property="og:url" content="https://joss943.github.io/linxterm/en/">
+  <meta property="og:image" content="https://joss943.github.io/linxterm/img/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="LinXterm window: sessions, toolbar and terminal">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#1a73e8">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
   <link rel="stylesheet" href="../style.css">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "LinXterm",
+  "softwareVersion": "1.3",
+  "operatingSystem": "Linux",
+  "applicationCategory": "DeveloperApplication",
+  "applicationSubCategory": "Terminal, SSH client",
+  "description": "Free all-in-one terminal for Linux: tabbed SSH, SFTP browser, X11, RDP, VNC, network tools and MultiExec. An open-source MobaXterm alternative (GPL-3.0).",
+  "inLanguage": [
+    "fr",
+    "en"
+  ],
+  "url": "https://joss943.github.io/linxterm/en/",
+  "downloadUrl": "https://github.com/Joss943/linxterm/releases/latest",
+  "codeRepository": "https://github.com/Joss943/linxterm",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR"
+  },
+  "screenshot": [
+    "https://joss943.github.io/linxterm/img/terminal-sombre.png",
+    "https://joss943.github.io/linxterm/img/accueil.png",
+    "https://joss943.github.io/linxterm/img/multiexec.png"
+  ],
+  "author": {
+    "@type": "Person",
+    "name": "Joss943",
+    "url": "https://github.com/Joss943"
+  }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is LinXterm free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. LinXterm is free and open-source software released under the GPL-3.0 license, with no ads, no account and no data collection."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is LinXterm a MobaXterm alternative for Linux?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. LinXterm follows the organization of MobaXterm (saved sessions, tabs, SFTP browser, X11 forwarding, Split, MultiExec, network tools) in a native Linux application, and imports your MobaXterm sessions. It is an independent project, not affiliated with Mobatek."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which Linux distributions does it run on?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "On Linux x86_64 with GTK 3.24 and VTE 0.76 or newer: Fedora 40 and later, Ubuntu 24.04 and later, Linux Mint 22, Debian 13, Arch Linux, openSUSE Tumbleweed and Leap 16, RHEL 10."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I import my existing sessions?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes: MobaXterm sessions (.mxtsessions or MobaXterm.ini), hosts from ~/.ssh/config, PuTTY and Remmina sessions, with their folders. Passwords are never imported."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does LinXterm work on Wayland?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, on X11 as well as Wayland (GNOME, KDE Plasma, Xfce, Cinnamon…). Remote graphical applications are displayed through X11 forwarding and Xwayland."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where are my passwords kept?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In your desktop keyring (GNOME Keyring or KWallet), never in plain text. LinXterm sends no data to its author."
+      }
+    }
+  ]
+}
+  </script>
 </head>
 <body>
 
@@ -30,6 +132,7 @@
       <a href="#compatibility">Compatibility</a>
       <a href="#installation">Installation</a>
       <a href="#getting-started">Getting started</a>
+      <a href="#faq">FAQ</a>
       <a href="#privacy">Privacy</a>
     </nav>
     <div class="header-actions">
@@ -49,7 +152,7 @@
 
   <section class="hero">
     <div class="wrap">
-      <p class="eyebrow">Free software for Linux · <a href="https://github.com/Joss943/linxterm/releases/latest">version 1.3</a></p>
+      <p class="eyebrow">Free SSH terminal for Linux · <a href="https://github.com/Joss943/linxterm/releases/latest">version 1.3</a></p>
       <h1>All your servers, in a single window.</h1>
       <p class="lead">LinXterm is a tabbed terminal that brings together SSH, an SFTP browser, X11 forwarding,
         RDP and VNC remote desktops, network tools, servers and SSH tunnels. Its interface is inspired
@@ -60,7 +163,7 @@
       </div>
       <p class="meta">GPL-3.0 license · Free Pascal, GTK 3 and VTE · X11 and Wayland</p>
       <figure class="hero-shot">
-        <img src="../img/terminal-sombre.png" width="1366" height="768"
+        <img src="../img/terminal-sombre.png" width="1366" height="768" fetchpriority="high"
              alt="LinXterm window in dark theme: toolbar, sessions panel and an open terminal">
       </figure>
     </div>
@@ -291,7 +394,40 @@ cd linxterm
     </div>
   </section>
 
-  <section id="privacy" class="section section-alt">
+  <section id="faq" class="section section-alt">
+    <div class="wrap">
+      <h2>Frequently asked questions</h2>
+      <p class="section-lead">Answers to the most common questions about LinXterm.</p>
+      <div class="faq">
+        <details>
+          <summary>Is LinXterm free?</summary>
+          <p>Yes. LinXterm is free and open-source software released under the GPL-3.0 license, with no ads, no account and no data collection.</p>
+        </details>
+        <details>
+          <summary>Is LinXterm a MobaXterm alternative for Linux?</summary>
+          <p>Yes. LinXterm follows the organization of MobaXterm (saved sessions, tabs, SFTP browser, X11 forwarding, Split, MultiExec, network tools) in a native Linux application, and imports your MobaXterm sessions. It is an independent project, not affiliated with Mobatek.</p>
+        </details>
+        <details>
+          <summary>Which Linux distributions does it run on?</summary>
+          <p>On Linux x86_64 with GTK 3.24 and VTE 0.76 or newer: Fedora 40 and later, Ubuntu 24.04 and later, Linux Mint 22, Debian 13, Arch Linux, openSUSE Tumbleweed and Leap 16, RHEL 10.</p>
+        </details>
+        <details>
+          <summary>Can I import my existing sessions?</summary>
+          <p>Yes: MobaXterm sessions (.mxtsessions or MobaXterm.ini), hosts from ~/.ssh/config, PuTTY and Remmina sessions, with their folders. Passwords are never imported.</p>
+        </details>
+        <details>
+          <summary>Does LinXterm work on Wayland?</summary>
+          <p>Yes, on X11 as well as Wayland (GNOME, KDE Plasma, Xfce, Cinnamon…). Remote graphical applications are displayed through X11 forwarding and Xwayland.</p>
+        </details>
+        <details>
+          <summary>Where are my passwords kept?</summary>
+          <p>In your desktop keyring (GNOME Keyring or KWallet), never in plain text. LinXterm sends no data to its author.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="privacy" class="section">
     <div class="wrap">
       <h2>Privacy and GDPR</h2>
       <p class="section-lead">LinXterm collects no personal data: everything it saves stays on your
