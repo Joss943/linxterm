@@ -1,7 +1,7 @@
 # LinXterm
 
-Terminal tout-en-un pour Linux qui reproduit l'interface et les fonctionnalités de
-**MobaXterm** : client SSH à onglets avec navigateur SFTP, X11-forwarding, RDP, VNC,
+Terminal tout-en-un pour Linux inspiré de l'interface et des fonctionnalités de
+MobaXterm : client SSH à onglets avec navigateur SFTP, X11-forwarding, RDP, VNC,
 Telnet, FTP, port série, outils réseau, serveurs, tunnels SSH, macros, MultiExec…
 
 Écrit en **Object Pascal** (Free Pascal, le langage de Delphi utilisé par MobaXterm),
@@ -12,6 +12,111 @@ sur le moteur C de PuTTY).
 > uniquement pour décrire l'inspiration et la compatibilité (import des sessions).
 
 ![LinXterm](capture-terminal-local.png)
+
+## Présentation
+
+LinXterm réunit dans une seule fenêtre tout ce qu'il faut pour travailler sur des machines
+à distance, sans jongler entre une dizaine d'outils :
+
+- **Terminaux à onglets** : terminaux locaux (bash, zsh…) et distants, onglets numérotés,
+  détachables et colorables, vue partagée (2 ou 4 terminaux, mosaïque) et **MultiExec**
+  pour taper la même commande dans plusieurs serveurs à la fois.
+- **Sessions enregistrées** : SSH, Telnet, Mosh, RDP, VNC, FTP, SFTP, port série, shell local,
+  explorateur de fichiers et navigateur web, rangées en dossiers. Les mots de passe sont gardés
+  dans le trousseau du bureau. Un dossier entier s'ouvre en un clic, et les sessions existantes
+  s'importent depuis MobaXterm, OpenSSH (`~/.ssh/config`), PuTTY ou Remmina.
+- **SSH complet** : X11-forwarding (les applications graphiques du serveur s'affichent sur votre
+  bureau), passerelle de rebond, clés privées, reconnexion automatique, **navigateur SFTP** qui
+  suit le dossier du terminal et barre de surveillance du serveur (CPU, RAM, disque, réseau).
+- **Outils intégrés** : scanner réseau et de ports, ping graphique, traceroute, ports ouverts,
+  Wake-on-LAN, calculatrice de sous-réseau, générateur de clés SSH, éditeur de texte,
+  comparaison de fichiers et de dossiers, liste des processus.
+- **Serveurs en un clic** (HTTP, FTP, TFTP, SSH, iperf3) pour échanger des fichiers sur le
+  réseau local, et **tunnels SSH** (redirections locales, distantes, SOCKS) gérés graphiquement.
+- **Confort** : macros, palette de commandes (Ctrl+Maj+P), coloration des mots-clés (erreurs en
+  rouge, avertissements en orange), journaux de session, notification à la fin des commandes
+  longues, liens et adresses IP cliquables, thème clair, sombre ou automatique.
+
+## Distributions compatibles
+
+LinXterm fonctionne sur **Linux x86_64** avec **GTK 3.24** et **VTE 0.76 ou plus récent**, sous
+X11 comme sous Wayland (GNOME, KDE Plasma, Xfce, Cinnamon…).
+
+| Distribution | Versions | État |
+|--------------|----------|------|
+| Fedora | 40 et suivantes | **testé** (Fedora 44, GNOME) |
+| Ubuntu, Kubuntu, Xubuntu… | 24.04 LTS et suivantes | compatible, non testé |
+| Linux Mint, Pop!_OS, Zorin OS | versions basées sur Ubuntu 24.04 | compatible, non testé |
+| Debian | 13 « trixie » et suivantes | compatible, non testé |
+| Arch Linux, Manjaro, EndeavourOS | à jour | compatible, non testé |
+| openSUSE | Tumbleweed, Leap 16 | compatible, non testé |
+| RHEL, AlmaLinux, Rocky Linux | 10 | compatible, non testé (Free Pascal à installer depuis freepascal.org) |
+
+**Non compatibles** (VTE trop ancien) : Debian 12, Ubuntu 22.04, Linux Mint 21, RHEL / Alma /
+Rocky 9, openSUSE Leap 15. Les processeurs ARM (Raspberry Pi…) ne sont pas pris en charge.
+
+## Installation
+
+**1. Installer le compilateur Free Pascal** (GTK 3 et VTE sont déjà présents sur les bureaux
+courants ; aucun paquet de développement n'est nécessaire) :
+
+| Distribution | Commande |
+|--------------|----------|
+| Fedora | `sudo dnf install fpc gtk3 vte291` |
+| Ubuntu, Debian, Mint | `sudo apt install fpc libgtk-3-0 libvte-2.91-0` |
+| Arch, Manjaro | `sudo pacman -S fpc gtk3 vte3` |
+| openSUSE | `sudo zypper install fpc libgtk-3-0 libvte-2_91-0` |
+
+**2. Télécharger et installer LinXterm** (sans droits administrateur : le programme reste dans
+son dossier, avec un lanceur dans le menu des applications et sur le Bureau) :
+
+```bash
+git clone https://github.com/Joss943/linxterm.git
+cd linxterm
+./install.sh
+```
+
+**3. Outils facultatifs**, utilisés par certaines fonctions s'ils sont installés :
+
+| Fonction | Programmes ou bibliothèques |
+|----------|-----------------------------|
+| SSH, SFTP, tunnels | `ssh`, `sftp` (OpenSSH), `sshpass`, `mosh` |
+| Bureau à distance RDP | FreeRDP 3 (`xfreerdp3` ou `sdl-freerdp3`) |
+| VNC dans un onglet | GTK-VNC (`libgtk-vnc-2.0`) |
+| Navigateur web intégré | WebKitGTK 4.1 |
+| Coloration syntaxique de l'éditeur | GtkSourceView 4 |
+| Mots de passe dans le trousseau | libsecret (GNOME Keyring, KWallet) |
+| Outils réseau | `nmap`, `traceroute`, `iperf3` |
+| Comparaison, processus | `meld` ou `kdiff3`, `htop` |
+
+Si un outil manque, LinXterm le signale. Le bouton **Packages** de la barre d'outils montre ce
+qui est installé et installe le reste (dnf, apt ou pacman).
+
+## Prise en main
+
+1. **Ouvrir un terminal local** : bouton *Start local terminal* de l'onglet d'accueil (ou
+   Entrée, ou Ctrl+Maj+T).
+2. **Se connecter tout de suite** : tapez `utilisateur@serveur` (ou `rdp serveur`,
+   `vnc serveur`, `sftp serveur`…) dans **Quick connect**, en haut à gauche, puis Entrée. Le
+   même champ filtre vos sessions enregistrées et propose des suggestions.
+3. **Enregistrer une session** : bouton **Session** de la barre d'outils, choisissez le type
+   (SSH, RDP…), saisissez le serveur et l'utilisateur, puis *OK*. La session apparaît dans
+   l'onglet **Sessions** du panneau latéral : double-clic pour l'ouvrir, clic droit pour la
+   modifier, la dupliquer, la ranger dans un dossier ou ouvrir tout un dossier.
+4. **Transférer des fichiers** : à l'ouverture d'une session SSH, l'onglet **Sftp** du panneau
+   latéral affiche les fichiers du serveur. Glissez-déposez pour envoyer ou télécharger ;
+   *Follow terminal folder* suit le dossier courant du terminal.
+5. **Lancer une application graphique distante** : avec *X11-Forwarding* coché (par défaut),
+   tapez par exemple `gedit` dans le terminal SSH, et la fenêtre s'ouvre sur votre bureau.
+6. **Travailler sur plusieurs serveurs** : **Split** affiche 2 ou 4 terminaux côte à côte ;
+   **MultiExec** envoie ce que vous tapez à tous les terminaux affichés (case *Receive input*
+   pour en exclure un).
+7. **Tunnels, serveurs, outils** : boutons **Tunneling** et **Servers** de la barre d'outils,
+   onglet **Tools** du panneau latéral.
+8. **Retrouver une commande** : Ctrl+Maj+P ouvre la palette ; tapez quelques lettres d'une
+   session, d'un onglet ou d'une commande de menu.
+9. **Personnaliser** : **Settings** (police, couleurs, invite, journaux, SSH, notifications…)
+   et *View > Skin* (clair, sombre ou automatique).
 
 ## Lancer
 
@@ -138,7 +243,7 @@ Les mots de passe ne sont jamais importés.
   terminal » / « Open a session… », et les terminaux restent dans leur tuile quand un onglet
   se ferme. En MultiExec, la case **Receive input** de chaque tuile exclut un terminal (grisé) :
   il ne reçoit plus la saisie des autres et ce qu'on y tape reste local.
-- **Ouvrir un dossier entier** (clic droit sur un dossier de sessions, ou bouton *Sessions*) :
+- **Ouvrir un dossier entier** (clic droit sur un dossier de sessions) :
   *Open all*, *Open all in split view* ou *Open all in MultiExec* — seuls les terminaux de ce
   dossier sont affichés et reçoivent la saisie (idéal pour un cluster de serveurs).
 - **Notifications de bureau** quand LinXterm n'est pas au premier plan : fin d'une commande
@@ -213,9 +318,11 @@ Les mots de passe ne sont jamais importés.
 ./install.sh    # compile + menu des applications + raccourci sur le Bureau
 ```
 
-Compilateur : Free Pascal 3.2 (installé dans `~/.local/opt/fpc`). Aucune bibliothèque
-de développement n'est nécessaire : seules les bibliothèques d'exécution GTK 3 / VTE
-sont utilisées.
+Compilateur : Free Pascal 3.2 (testé avec 3.2.3). `build.sh` utilise la variable `FPCDIR`
+si elle est définie, sinon `~/.local/opt/fpc`, sinon le paquet `fpc` de la distribution ; il
+trouve seul les bibliothèques selon l'arborescence (Fedora/openSUSE, Debian/Ubuntu, Arch).
+Aucune bibliothèque de développement n'est nécessaire : seules les bibliothèques
+d'exécution GTK 3 / VTE sont utilisées.
 
 ## Organisation du code (`src/`)
 
