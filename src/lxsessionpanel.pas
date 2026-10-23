@@ -261,7 +261,7 @@ begin
   gtk_tree_view_column_pack_start(col, cell, False);
   gtk_tree_view_column_add_attribute(col, cell, 'pixbuf', COL_ICON);
   cell := gtk_cell_renderer_text_new;
-  gtk_cell_renderer_set_padding(cell, 4, 1);
+  gtk_cell_renderer_set_padding(cell, 4, 2);
   gtk_tree_view_column_pack_start(col, cell, True);
   gtk_tree_view_column_add_attribute(col, cell, 'markup', COL_TEXT);
   gtk_tree_view_append_column(FView, col);

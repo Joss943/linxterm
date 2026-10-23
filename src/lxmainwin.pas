@@ -18,8 +18,8 @@ type
   public
     Owner: TMainWindow;
     RecentList: Pointer;
+    StartBtn: Pointer;
     RestoreBtn: Pointer;
-    SearchEntry: Pointer;
     constructor Create(AOwner: TMainWindow);
     procedure RefreshRecent;
     procedure FocusContent; override;
@@ -57,7 +57,7 @@ type
     FNotebook: Pointer;
     FSplitBox, FSplitGrid, FMultiBar, FMultiLabel: Pointer;
     FSplitOnly: TList;        { terminals shown by the split view ('' = all) }
-    FQuickStore: Pointer;     { completion of the quick connect / home search entries }
+    FQuickStore: Pointer;     { completion of the quick connect entry }
     FKeepFilter: Boolean;
     FTiles: array of TSplitTile;
     FSplitMode: Integer;
@@ -185,106 +185,97 @@ const
   SIDE_SFTP = 3;
 
   MENU_SERVERS = 1;
-  MENU_TOOLS = 2;
   MENU_GAMES = 3;
-  MENU_SESSIONS = 4;
   MENU_VIEW = 5;
   MENU_SPLIT = 6;
   MENU_HELP = 7;
   MENU_XSERVER = 8;
 
-  LightCss =
-    '.lx-main { font-size: 10pt; }'#10 +
-    '.lx-menubar { background-color: #ffffff; border-bottom: 1px solid #e3e3e3; padding: 0; }'#10 +
-    '.lx-menubar > menuitem { padding: 3px 8px; }'#10 +
-    '.lx-toolbar { background-color: #ffffff; border-bottom: 1px solid #d6d6d6; padding: 2px 4px 3px 4px; }'#10 +
-    '.lx-toolbar button { padding: 3px 5px 1px 5px; margin: 0; border-radius: 0; border: 1px solid transparent; background: none; box-shadow: none; min-width: 46px; }'#10 +
-    '.lx-toolbar button:hover { background-color: #e5f3ff; border-color: #cce8ff; }'#10 +
-    '.lx-toolbar button:checked, .lx-toolbar button:active { background-color: #cce8ff; border-color: #99d1ff; }'#10 +
-    '.lx-toolbar label { font-size: 9pt; color: #1e1e1e; }'#10 +
-    '.lx-body { background-color: #f0f0f0; }'#10 +
-    '.lx-quick { margin: 3px 2px 2px 3px; font-size: 11pt; min-height: 24px; }'#10 +
-    '.lx-strip { background-color: #f0f0f0; padding: 0 0 0 2px; }'#10 +
-    '.lx-strip button { border-radius: 0; padding: 8px 1px; margin: 0 0 2px 0; background: #dbe5f1; border: 1px solid #b4c4d9; border-right-width: 0; box-shadow: none; }'#10 +
-    '.lx-strip button:hover { background: #e8f0fa; }'#10 +
-    '.lx-strip button:checked { background: #ffffff; border-color: #b4c4d9; }'#10 +
-    '.lx-strip button label { font-size: 9pt; font-weight: bold; color: #303030; }'#10 +
-    '.lx-collapse { padding: 2px; margin-bottom: 6px; border: none; background: none; box-shadow: none; color: #1a73e8; font-weight: bold; font-size: 14pt; }'#10 +
-    '.lx-sidepanel { background-color: #ffffff; border: 1px solid #b4c4d9; }'#10 +
-    '.lx-sidepanel treeview { background-color: #ffffff; }'#10 +
-    'notebook.lx-tabs > header { background-color: #f0f0f0; border-bottom: 1px solid #b9b9b9; padding: 2px 0 0 0; }'#10 +
-    'notebook.lx-tabs > header > tabs > tab { padding: 2px 6px; min-height: 22px; margin: 0 1px; background: #e6e6e6; border: 1px solid #c8c8c8; border-bottom: none; border-radius: 3px 3px 0 0; }'#10 +
-    'notebook.lx-tabs > header > tabs > tab:checked { background: #2b2b2b; border-color: #2b2b2b; box-shadow: inset 0 2px #1a73e8; }'#10 +
-    'notebook.lx-tabs > header > tabs > tab:hover:not(:checked) { background: #f4f4f4; }'#10 +
-    'notebook.lx-tabs > header > tabs > tab:checked label { color: #ffffff; }'#10 +
-    'notebook.lx-tabs > header > tabs > tab:checked .lx-tab-close image { color: #ffffff; }'#10 +
-    '.lx-tab-close { padding: 0; min-height: 14px; min-width: 14px; margin-left: 4px; }'#10 +
-    '.lx-tabmark { min-width: 4px; min-height: 16px; border-radius: 2px; margin-right: 1px; }'#10 +
-    '.lx-tabmark.red { background-color: #e53935; }'#10 +
-    '.lx-tabmark.orange { background-color: #fb8c00; }'#10 +
-    '.lx-tabmark.yellow { background-color: #fdd835; }'#10 +
-    '.lx-tabmark.green { background-color: #43a047; }'#10 +
-    '.lx-tabmark.blue { background-color: #1e88e5; }'#10 +
-    '.lx-tabmark.purple { background-color: #8e24aa; }'#10 +
-    '.lx-tabmark.gray { background-color: #78909c; }'#10 +
-    '.lx-newtab { padding: 0 6px; margin: 2px 4px; min-height: 18px; border-radius: 3px; }'#10 +
-    '.lx-status { background-color: #f0f0f0; border-top: 1px solid #d6d6d6; padding: 1px 6px; font-size: 9pt; color: #404040; }'#10 +
-    '.lx-multibar { background-color: #fffbd0; border-bottom: 1px solid #e1d68a; padding: 6px 10px; }'#10 +
-    '.lx-multibar label { font-weight: bold; }'#10 +
-    '.lx-tile-header { background-color: #3c3c3c; padding: 1px 4px; }'#10 +
-    '.lx-tile-header label { color: #f0f0f0; font-size: 9pt; }'#10 +
-    '.lx-tile-active .lx-tile-header { background-color: #1a73e8; }'#10 +
-    '.lx-tile-off .lx-tile-header { background-color: #8a8a8a; }'#10 +
-    '.lx-monitor { background-color: #e9e9e9; border-top: 1px solid #c0c0c0; }'#10 +
-    '.lx-monitor label { font-size: 9pt; color: #202020; }'#10 +
-    '.lx-monitor levelbar trough { min-height: 8px; min-width: 50px; padding: 1px; border-radius: 2px; }'#10 +
-    '.lx-monitor levelbar block { min-height: 6px; border-radius: 1px; }'#10 +
-    '.lx-monitor levelbar block.lx-ok { background-color: #43a047; border-color: #2e7d32; }'#10 +
-    '.lx-monitor levelbar block.lx-warn { background-color: #fb8c00; border-color: #ef6c00; }'#10 +
-    '.lx-monitor levelbar block.lx-crit { background-color: #e53935; border-color: #c62828; }'#10 +
-    '.lx-searchbar { background-color: #f3f3f3; }'#10 +
-    '.lx-home { background-color: #ffffff; background-image: linear-gradient(to bottom, #eef3fa, #ffffff 45%); }'#10 +
-    '.lx-home-title { font-size: 26pt; font-weight: bold; color: #1b2a40; }'#10 +
-    '.lx-home-sub { color: #6b6b6b; }'#10 +
-    '.lx-home-big { padding: 10px 20px; font-size: 11pt; border-radius: 8px; }'#10 +
-    '.lx-home-big:hover { box-shadow: 0 2px 8px rgba(26, 115, 232, 0.25); border-color: #8ab4f8; }'#10 +
-    '.lx-home list { background-color: #ffffff; border: 1px solid #e2e2e2; border-radius: 6px; }'#10 +
-    '.lx-home list row { padding: 4px 8px; }'#10 +
-    '.lx-home list row:hover { background-color: #eef4fc; }'#10 +
-    '.lx-term-scroll slider { min-width: 7px; border-radius: 4px; }'#10 +
-    '.lx-home-caption { font-weight: bold; color: #1b2a40; }'#10 +
-    '.lx-kind-row button { padding: 4px 6px; min-width: 58px; border-radius: 0; border: 1px solid transparent; }'#10 +
-    '.lx-kind-row button:checked { background: #cce8ff; border-color: #99d1ff; }'#10 +
-    '.lx-kind-row button label { font-size: 9pt; }'#10 +
-    '.lx-group > label { color: #1b4f8a; }'#10 +
-    '.lx-browser-path { font-size: 9pt; }'#10 +
-    '.lx-browser-toolbar button { padding: 2px; min-height: 20px; min-width: 20px; }'#10 +
-    '.lx-panel-title { font-weight: bold; padding: 4px; color: #1b2a40; }'#10 +
-    '.lx-palette { background-color: #ffffff; border: 1px solid #9fb4cc; border-radius: 6px; }'#10 +
-    '.lx-palette list { background-color: #ffffff; }'#10 +
-    '.lx-palette list row:selected { background-color: #cce8ff; color: #1e1e1e; }'#10;
+  { skins: one set of rules (SkinCss) drawn with the colors of the light or of the dark palette }
+  LightColors =
+    '@define-color lx_accent #1a73e8;'#10 +
+    '@define-color lx_chrome #f3f4f6;'#10 +
+    '@define-color lx_surface #ffffff;'#10 +
+    '@define-color lx_border #dadde3;'#10 +
+    '@define-color lx_text #1f2328;'#10 +
+    '@define-color lx_text_dim #5f6670;'#10 +
+    '@define-color lx_hover rgba(0, 0, 0, 0.055);'#10 +
+    '@define-color lx_press rgba(0, 0, 0, 0.1);'#10 +
+    '@define-color lx_select #d6e5fb;'#10 +
+    '@define-color lx_tab_active #2b2b2b;'#10 +
+    '@define-color lx_home_top #eaf1fb;'#10 +
+    '@define-color lx_title #1b2a40;'#10 +
+    '@define-color lx_group #1b4f8a;'#10 +
+    '@define-color lx_multi_bg #fff6d1;'#10 +
+    '@define-color lx_multi_border #ead27a;'#10 +
+    '@define-color lx_multi_text #4a3c00;'#10;
 
-  DarkCss =
+  DarkColors =
+    '@define-color lx_accent #4c8dff;'#10 +
+    '@define-color lx_chrome #26282c;'#10 +
+    '@define-color lx_surface #1c1d20;'#10 +
+    '@define-color lx_border #3a3d43;'#10 +
+    '@define-color lx_text #e6e8eb;'#10 +
+    '@define-color lx_text_dim #a0a6ae;'#10 +
+    '@define-color lx_hover rgba(255, 255, 255, 0.07);'#10 +
+    '@define-color lx_press rgba(255, 255, 255, 0.12);'#10 +
+    '@define-color lx_select #26466f;'#10 +
+    '@define-color lx_tab_active #000000;'#10 +
+    '@define-color lx_home_top #252b34;'#10 +
+    '@define-color lx_title #e8eef7;'#10 +
+    '@define-color lx_group #8cbcf2;'#10 +
+    '@define-color lx_multi_bg #4d4519;'#10 +
+    '@define-color lx_multi_border #716526;'#10 +
+    '@define-color lx_multi_text #fff3bf;'#10;
+
+  SkinCss =
     '.lx-main { font-size: 10pt; }'#10 +
-    '.lx-menubar { background-color: #2b2b2b; border-bottom: 1px solid #1f1f1f; }'#10 +
-    '.lx-toolbar { background-color: #2b2b2b; border-bottom: 1px solid #1f1f1f; padding: 2px 4px 3px 4px; }'#10 +
-    '.lx-toolbar button { padding: 3px 5px 1px 5px; margin: 0; border-radius: 0; border: 1px solid transparent; background: none; box-shadow: none; min-width: 46px; }'#10 +
-    '.lx-toolbar button:hover { background-color: #3d4a5a; border-color: #4f6177; }'#10 +
-    '.lx-toolbar button:checked { background-color: #2f5f8f; border-color: #4f86bd; }'#10 +
-    '.lx-toolbar label { font-size: 9pt; color: #e8e8e8; }'#10 +
-    '.lx-body { background-color: #232323; }'#10 +
-    '.lx-quick { margin: 3px 2px 2px 3px; font-size: 11pt; min-height: 24px; }'#10 +
-    '.lx-strip { background-color: #232323; padding: 0 0 0 2px; }'#10 +
-    '.lx-strip button { border-radius: 0; padding: 8px 1px; margin: 0 0 2px 0; background: #34404e; border: 1px solid #46566a; border-right-width: 0; box-shadow: none; }'#10 +
-    '.lx-strip button:checked { background: #1e1e1e; }'#10 +
-    '.lx-strip button label { font-size: 9pt; font-weight: bold; color: #e0e0e0; }'#10 +
-    '.lx-collapse { padding: 2px; margin-bottom: 6px; border: none; background: none; box-shadow: none; color: #6aa9ff; font-weight: bold; font-size: 14pt; }'#10 +
-    '.lx-sidepanel { background-color: #1e1e1e; border: 1px solid #46566a; }'#10 +
-    'notebook.lx-tabs > header { background-color: #232323; border-bottom: 1px solid #111; padding: 2px 0 0 0; }'#10 +
-    'notebook.lx-tabs > header > tabs > tab { padding: 2px 6px; min-height: 22px; margin: 0 1px; background: #333; border: 1px solid #444; border-bottom: none; border-radius: 3px 3px 0 0; }'#10 +
-    'notebook.lx-tabs > header > tabs > tab:checked { background: #000000; border-color: #555; box-shadow: inset 0 2px #4c8dff; }'#10 +
-    'notebook.lx-tabs > header > tabs > tab:hover:not(:checked) { background: #3b3b3b; }'#10 +
-    '.lx-tab-close { padding: 0; min-height: 14px; min-width: 14px; margin-left: 4px; }'#10 +
+    { menu bar and toolbar form one header }
+    '.lx-menubar { background-color: @lx_chrome; background-image: none; border: none; box-shadow: none; padding: 2px 4px 0 4px; }'#10 +
+    '.lx-menubar > menuitem { padding: 4px 10px; border-radius: 5px; color: @lx_text; box-shadow: none; }'#10 +
+    '.lx-menubar > menuitem:hover { background-color: @lx_hover; color: @lx_text; box-shadow: none; }'#10 +
+    '.lx-toolbar { background-color: @lx_chrome; border-bottom: 1px solid @lx_border; padding: 3px 6px 4px 6px; }'#10 +
+    '.lx-toolbar > button { border-radius: 6px; border: 1px solid transparent; background-image: none; background-color: transparent; ' +
+      'box-shadow: none; text-shadow: none; -gtk-icon-shadow: none; transition: background-color 120ms ease-out, border-color 120ms ease-out; }'#10 +
+    '.lx-toolbar > button:hover { background-color: @lx_hover; }'#10 +
+    '.lx-toolbar > button:active { background-color: @lx_press; }'#10 +
+    '.lx-toolbar > button:checked { background-color: @lx_select; border-color: alpha(@lx_accent, 0.45); }'#10 +
+    '.lx-maintoolbar > button { padding: 4px 6px 2px 6px; margin: 0 1px; min-width: 50px; }'#10 +
+    '.lx-maintoolbar label { font-size: 9pt; color: @lx_text; }'#10 +
+    { left column: quick connect, vertical tabs and side panel }
+    '.lx-body { background-color: @lx_chrome; }'#10 +
+    '.lx-body > paned > separator { background-image: image(@lx_border); }'#10 +
+    '.lx-quick { margin: 6px 6px 4px 6px; min-height: 28px; border-radius: 6px; border: 1px solid @lx_border; background-color: @lx_surface; box-shadow: none; }'#10 +
+    '.lx-quick:focus { border-color: @lx_accent; box-shadow: inset 0 0 0 1px @lx_accent; }'#10 +
+    '.lx-strip { background-color: @lx_chrome; padding: 2px 0 0 4px; }'#10 +
+    '.lx-strip > button { border-radius: 6px 0 0 6px; padding: 10px 3px; margin: 0 0 3px 0; border: none; background-image: none; ' +
+      'background-color: transparent; box-shadow: none; transition: background-color 120ms ease-out; }'#10 +
+    '.lx-strip > button:hover { background-color: @lx_hover; }'#10 +
+    '.lx-strip > button:checked { background-color: @lx_surface; box-shadow: inset 3px 0 @lx_accent; }'#10 +
+    '.lx-strip > button label { font-size: 9pt; font-weight: bold; color: @lx_text_dim; }'#10 +
+    '.lx-strip > button:checked label { color: @lx_text; }'#10 +
+    '.lx-strip > button.lx-collapse { border-radius: 6px; padding: 2px 0; margin: 0 4px 6px 0; color: @lx_text_dim; font-weight: bold; font-size: 13pt; }'#10 +
+    '.lx-strip > button.lx-collapse:hover { color: @lx_accent; }'#10 +
+    '.lx-sidepanel { background-color: @lx_surface; border-top: 1px solid @lx_border; }'#10 +
+    '.lx-sidepanel treeview.view { background-color: @lx_surface; color: @lx_text; }'#10 +
+    '.lx-sidepanel treeview.view:selected { background-color: @lx_select; color: @lx_text; }'#10 +
+    { tabs: the active tab is dark like the terminal under it, with the accent line on top }
+    'notebook.lx-tabs > header { background-color: @lx_chrome; background-image: none; border: none; border-bottom: 1px solid @lx_border; ' +
+      'box-shadow: none; padding: 4px 4px 0 4px; }'#10 +
+    'notebook.lx-tabs > header > tabs > tab { padding: 3px 10px; min-height: 24px; margin: 0 2px 0 0; border: none; border-radius: 6px 6px 0 0; ' +
+      'background-color: transparent; background-image: none; box-shadow: none; color: @lx_text_dim; transition: background-color 120ms ease-out; }'#10 +
+    'notebook.lx-tabs > header > tabs > tab:hover { background-color: @lx_hover; color: @lx_text; }'#10 +
+    'notebook.lx-tabs > header > tabs > tab:checked { background-color: @lx_tab_active; color: #ffffff; box-shadow: inset 0 2px @lx_accent; }'#10 +
+    'notebook.lx-tabs.lx-on-home > header > tabs > tab:checked { background-color: @lx_home_top; color: @lx_text; }'#10 +
+    'notebook.lx-tabs > header > tabs > tab label { color: @lx_text_dim; }'#10 +
+    'notebook.lx-tabs > header > tabs > tab:hover label { color: @lx_text; }'#10 +
+    'notebook.lx-tabs > header > tabs > tab:checked label { color: #ffffff; }'#10 +
+    'notebook.lx-tabs.lx-on-home > header > tabs > tab:checked label { color: @lx_text; }'#10 +
+    '.lx-tab-close { padding: 0; min-height: 16px; min-width: 16px; margin-left: 6px; border: none; border-radius: 4px; background-image: none; ' +
+      'background-color: transparent; box-shadow: none; color: @lx_text; opacity: 0.55; }'#10 +
+    '.lx-tab-close:hover { opacity: 1; background-color: alpha(@lx_text_dim, 0.25); }'#10 +
+    'notebook.lx-tabs > header > tabs > tab:checked .lx-tab-close { color: #ffffff; opacity: 0.8; }'#10 +
+    'notebook.lx-tabs > header > tabs > tab:checked .lx-tab-close:hover { opacity: 1; background-color: rgba(255, 255, 255, 0.18); }'#10 +
     '.lx-tabmark { min-width: 4px; min-height: 16px; border-radius: 2px; margin-right: 1px; }'#10 +
     '.lx-tabmark.red { background-color: #e53935; }'#10 +
     '.lx-tabmark.orange { background-color: #fb8c00; }'#10 +
@@ -293,41 +284,52 @@ const
     '.lx-tabmark.blue { background-color: #1e88e5; }'#10 +
     '.lx-tabmark.purple { background-color: #8e24aa; }'#10 +
     '.lx-tabmark.gray { background-color: #78909c; }'#10 +
-    '.lx-newtab { padding: 0 6px; margin: 2px 4px; min-height: 18px; border-radius: 3px; }'#10 +
-    '.lx-status { background-color: #232323; border-top: 1px solid #111; padding: 1px 6px; font-size: 9pt; color: #c0c0c0; }'#10 +
-    '.lx-multibar { background-color: #5a5220; border-bottom: 1px solid #7a6f2a; padding: 6px 10px; }'#10 +
-    '.lx-multibar label { font-weight: bold; color: #fff6c0; }'#10 +
+    '.lx-status { background-color: @lx_chrome; border-top: 1px solid @lx_border; padding: 2px 8px; font-size: 9pt; color: @lx_text_dim; }'#10 +
+    { split view, MultiExec, terminal bars }
+    '.lx-multibar { background-color: @lx_multi_bg; border-bottom: 1px solid @lx_multi_border; padding: 6px 12px; }'#10 +
+    '.lx-multibar label { font-weight: bold; color: @lx_multi_text; }'#10 +
     '.lx-tile-header { background-color: #3c3c3c; padding: 1px 4px; }'#10 +
     '.lx-tile-header label { color: #f0f0f0; font-size: 9pt; }'#10 +
-    '.lx-tile-active .lx-tile-header { background-color: #1a73e8; }'#10 +
+    '.lx-tile-active .lx-tile-header { background-color: @lx_accent; }'#10 +
     '.lx-tile-off .lx-tile-header { background-color: #8a8a8a; }'#10 +
-    '.lx-monitor { background-color: #2d2d2d; border-top: 1px solid #111; }'#10 +
-    '.lx-monitor label { font-size: 9pt; color: #e0e0e0; }'#10 +
+    '.lx-monitor { background-color: @lx_chrome; border-top: 1px solid @lx_border; }'#10 +
+    '.lx-monitor label { font-size: 9pt; color: @lx_text; }'#10 +
     '.lx-monitor levelbar trough { min-height: 8px; min-width: 50px; padding: 1px; border-radius: 2px; }'#10 +
     '.lx-monitor levelbar block { min-height: 6px; border-radius: 1px; }'#10 +
     '.lx-monitor levelbar block.lx-ok { background-color: #43a047; border-color: #2e7d32; }'#10 +
     '.lx-monitor levelbar block.lx-warn { background-color: #fb8c00; border-color: #ef6c00; }'#10 +
     '.lx-monitor levelbar block.lx-crit { background-color: #e53935; border-color: #c62828; }'#10 +
-    '.lx-home { background-color: #1e1e1e; background-image: linear-gradient(to bottom, #252b34, #1e1e1e 45%); }'#10 +
-    '.lx-home-title { font-size: 26pt; font-weight: bold; color: #e8eef7; }'#10 +
-    '.lx-home-sub { color: #a0a0a0; }'#10 +
-    '.lx-home-big { padding: 10px 20px; font-size: 11pt; border-radius: 8px; }'#10 +
-    '.lx-home-big:hover { box-shadow: 0 2px 8px rgba(76, 141, 255, 0.30); border-color: #4c8dff; }'#10 +
-    '.lx-home list { border: 1px solid #3a3a3a; border-radius: 6px; }'#10 +
-    '.lx-home list row { padding: 4px 8px; }'#10 +
-    '.lx-home list row:hover { background-color: #2c3440; }'#10 +
+    '.lx-searchbar { background-color: @lx_chrome; }'#10 +
     '.lx-term-scroll slider { min-width: 7px; border-radius: 4px; }'#10 +
-    '.lx-home-caption { font-weight: bold; color: #e8eef7; }'#10 +
-    '.lx-kind-row button { padding: 4px 6px; min-width: 58px; border-radius: 0; border: 1px solid transparent; }'#10 +
-    '.lx-kind-row button:checked { background: #2f5f8f; border-color: #4f86bd; }'#10 +
+    { home tab }
+    '.lx-home { background-color: @lx_surface; background-image: linear-gradient(to bottom, @lx_home_top, @lx_surface 45%); }'#10 +
+    '.lx-home-title { font-size: 26pt; font-weight: bold; color: @lx_title; }'#10 +
+    '.lx-home-sub { color: @lx_text_dim; }'#10 +
+    '.lx-home-big { padding: 12px 22px; font-size: 11pt; border-radius: 10px; border: 1px solid @lx_border; background-image: none; ' +
+      'background-color: @lx_surface; color: @lx_text; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06); -gtk-outline-radius: 10px; ' +
+      'transition: border-color 150ms ease-out, box-shadow 150ms ease-out, background-color 150ms ease-out; }'#10 +
+    '.lx-home-big:hover { border-color: alpha(@lx_accent, 0.7); box-shadow: 0 3px 12px alpha(@lx_accent, 0.22); }'#10 +
+    '.lx-home-big:active { background-color: @lx_select; box-shadow: none; }'#10 +
+    '.lx-home-big:disabled { background-color: transparent; box-shadow: none; opacity: 0.55; }'#10 +
+    '.lx-home-caption { font-weight: bold; color: @lx_text_dim; }'#10 +
+    '.lx-home list { background-color: @lx_surface; border: 1px solid @lx_border; border-radius: 10px; }'#10 +
+    '.lx-home list row { padding: 6px 12px; border-radius: 8px; }'#10 +
+    '.lx-home list row:hover { background-color: alpha(@lx_accent, 0.08); }'#10 +
+    '.lx-home-empty { color: @lx_text_dim; }'#10 +
+    { dialogs and panels }
+    '.lx-kind-row button { padding: 6px; min-width: 58px; border-radius: 8px; border: 1px solid transparent; background-image: none; ' +
+      'background-color: transparent; box-shadow: none; transition: background-color 120ms ease-out; }'#10 +
+    '.lx-kind-row button:hover { background-color: @lx_hover; }'#10 +
+    '.lx-kind-row button:checked { background-color: @lx_select; border-color: alpha(@lx_accent, 0.45); }'#10 +
     '.lx-kind-row button label { font-size: 9pt; }'#10 +
-    '.lx-group > label { color: #8cbcf2; }'#10 +
+    '.lx-group > label { color: @lx_group; }'#10 +
     '.lx-browser-path { font-size: 9pt; }'#10 +
     '.lx-browser-toolbar button { padding: 2px; min-height: 20px; min-width: 20px; }'#10 +
-    '.lx-panel-title { font-weight: bold; padding: 4px; }'#10 +
-    '.lx-palette { background-color: #252526; border: 1px solid #46566a; border-radius: 6px; }'#10 +
-    '.lx-palette list { background-color: #252526; }'#10 +
-    '.lx-palette list row:selected { background-color: #2f5f8f; }'#10;
+    '.lx-panel-title { font-weight: bold; padding: 4px; color: @lx_text; }'#10 +
+    '.lx-palette { background-color: @lx_surface; border: 1px solid @lx_border; }'#10 +
+    '.lx-palette list { background-color: @lx_surface; }'#10 +
+    '.lx-palette list row { border-radius: 6px; }'#10 +
+    '.lx-palette list row:selected { background-color: @lx_select; color: @lx_text; }'#10;
 
 { ---------------------------------------------------------------- small callbacks }
 
@@ -366,6 +368,11 @@ end;
 
 procedure SwitchPageCb(notebook: Pointer; page: Pointer; num: guint; data: gpointer); cdecl;
 begin
+  { the active tab takes the colors of its page: light over the home page, dark over a terminal }
+  if TObject(g_object_get_data(page, 'lxtab')) is THomeTab then
+    AddClass(notebook, 'lx-on-home')
+  else
+    RemoveClass(notebook, 'lx-on-home');
   TMainWindow(data).SwitchedPage(page);
 end;
 
@@ -506,11 +513,6 @@ begin
   MainWin.SetSidebarCollapsed(False);
   MainWin.ShowSidePage(SIDE_SESSIONS);
 end;
-procedure CbOpenFolder(item: Pointer; data: gpointer); cdecl;
-begin
-  MainWin.OpenFolder(CStr(PChar(g_object_get_data(item, 'folder'))), PtrInt(g_object_get_data(item, 'layout')));
-end;
-
 procedure CbOpenSavedSession(item: Pointer; data: gpointer); cdecl;
 var
   s: TSession;
@@ -711,8 +713,6 @@ procedure TbSettings(b: Pointer; data: gpointer); cdecl;
 begin
   if Assigned(ShowSettingsProc) then ShowSettingsProc;
 end;
-procedure TbExit(b: Pointer; data: gpointer); cdecl; begin MainWin.Quit; end;
-procedure TbNewTab(b: Pointer; data: gpointer); cdecl; begin MainWin.NewLocalTerminal; end;
 
 { side strip }
 procedure SideButtonClicked(b: Pointer; data: gpointer); cdecl;
@@ -951,37 +951,12 @@ end;
 { home }
 procedure HomeStartLocal(b: Pointer; data: gpointer); cdecl; begin MainWin.NewLocalTerminal; end;
 procedure HomeRecover(b: Pointer; data: gpointer); cdecl; begin MainWin.RecoverSessions; end;
-procedure HomeImport(b: Pointer; data: gpointer); cdecl;
-var
-  menu: Pointer;
-begin
-  menu := gtk_menu_new;
-  MainWin.BuildImportMenu(menu);
-  PopupMenuBelow(menu, b);
-end;
-procedure HomePalette(b: Pointer; data: gpointer); cdecl; begin MainWin.ShowCommandPalette; end;
 procedure HomeRecentActivated(list: Pointer; row: Pointer; data: gpointer); cdecl;
 var
   key: string;
 begin
   key := CStr(PChar(g_object_get_data(row, 'key')));
   if key <> '' then MainWin.OpenRecent(key);
-end;
-procedure HomeSearchActivate(entry: Pointer; data: gpointer); cdecl;
-var
-  txt: string;
-  s: TSession;
-begin
-  txt := Trim(EntryText(entry));
-  if txt = '' then Exit;
-  MainWin.FSessions.SetFilter(txt);
-  s := MainWin.FSessions.SingleMatch;
-  if s <> nil then
-    MainWin.OpenSession(s)
-  else
-    MainWin.QuickConnect(txt);
-  MainWin.FSessions.SetFilter('');
-  SetEntryText(entry, '');
 end;
 
 { automated tests: text shown by a widget (labels inside boxes included) }
@@ -1508,7 +1483,7 @@ end;
 
 constructor THomeTab.Create(AOwner: TMainWindow);
 var
-  scroll, col, hb, tbox, logo, sub, b, cap, ph: Pointer;
+  scroll, col, hb, tbox, logo, sub, cap, ph: Pointer;
 begin
   inherited Create(nil);
   Owner := AOwner;
@@ -1541,22 +1516,15 @@ begin
 
   hb := gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 20);
   gtk_widget_set_halign(hb, GTK_ALIGN_CENTER);
-  b := NewIconButton('utilities-terminal', 'Start local terminal', 'Open a new tab with a local shell', 32);
-  AddClass(b, 'lx-home-big');
-  Connect(b, 'clicked', @HomeStartLocal, nil);
-  gtk_box_pack_start(hb, b, False, False, 0);
+  StartBtn := NewIconButton('utilities-terminal', 'Start local terminal', 'Open a new tab with a local shell (Ctrl+Shift+T)', 32);
+  AddClass(StartBtn, 'lx-home-big');
+  Connect(StartBtn, 'clicked', @HomeStartLocal, nil);
+  gtk_box_pack_start(hb, StartBtn, False, False, 0);
   RestoreBtn := NewIconButton('document-revert', 'Recover previous sessions', 'Re-open the sessions of the last run', 32);
   AddClass(RestoreBtn, 'lx-home-big');
   Connect(RestoreBtn, 'clicked', @HomeRecover, nil);
   gtk_box_pack_start(hb, RestoreBtn, False, False, 0);
   gtk_box_pack_start(col, hb, False, False, 6);
-
-  SearchEntry := gtk_search_entry_new;
-  gtk_entry_set_placeholder_text(SearchEntry, 'Find existing session or server name...');
-  gtk_widget_set_size_request(SearchEntry, 420, -1);
-  gtk_widget_set_halign(SearchEntry, GTK_ALIGN_CENTER);
-  Connect(SearchEntry, 'activate', @HomeSearchActivate, nil);
-  gtk_box_pack_start(col, SearchEntry, False, False, 6);
 
   cap := NewLabel('Recent sessions', 0);
   AddClass(cap, 'lx-home-caption');
@@ -1565,24 +1533,14 @@ begin
   gtk_list_box_set_selection_mode(RecentList, GTK_SELECTION_NONE);
   gtk_list_box_set_activate_on_single_click(RecentList, True);
   Connect(RecentList, 'row-activated', @HomeRecentActivated, nil);
-  ph := NewMarkupLabel('<span foreground="#888888"><i>No recent session</i></span>', 0.5);
-  SetMargins(ph, 8);
+  ph := NewLabel('No recent session yet: open one from the Sessions panel,'#10 +
+    'or type user@host in Quick connect', 0.5);
+  gtk_label_set_justify(ph, GTK_JUSTIFY_CENTER);
+  AddClass(ph, 'lx-home-empty');
+  SetMargins(ph, 14);
   gtk_widget_show(ph);
   gtk_list_box_set_placeholder(RecentList, ph);
   gtk_box_pack_start(col, RecentList, False, False, 0);
-
-  hb := gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
-  gtk_widget_set_halign(hb, GTK_ALIGN_CENTER);
-  b := NewIconButton('document-import', 'Import sessions...', 'Import your sessions from MobaXterm (.mxtsessions / MobaXterm.ini), ' +
-    '~/.ssh/config, PuTTY or Remmina', 16);
-  gtk_button_set_relief(b, GTK_RELIEF_NONE);
-  Connect(b, 'clicked', @HomeImport, nil);
-  gtk_box_pack_start(hb, b, False, False, 0);
-  b := NewIconButton('system-search', 'Command palette (Ctrl+Shift+P)', 'Find a session, a tab or a command', 16);
-  gtk_button_set_relief(b, GTK_RELIEF_NONE);
-  Connect(b, 'clicked', @HomePalette, nil);
-  gtk_box_pack_start(hb, b, False, False, 0);
-  gtk_box_pack_start(col, hb, False, False, 8);
 
   scroll := gtk_scrolled_window_new(nil, nil);
   gtk_scrolled_window_set_policy(scroll, GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
@@ -1664,7 +1622,8 @@ end;
 
 procedure THomeTab.FocusContent;
 begin
-  gtk_widget_grab_focus(SearchEntry);
+  { Enter starts a terminal; the quick connect entry keeps its hint visible }
+  gtk_widget_grab_focus(StartBtn);
 end;
 
 { ---------------------------------------------------------------- TDetachedWindow }
@@ -1787,7 +1746,7 @@ begin
     g_object_unref(FCss);
   end;
   FCss := gtk_css_provider_new;
-  if dark then css := DarkCss else css := LightCss;
+  if dark then css := DarkColors + SkinCss else css := LightColors + SkinCss;
   err := nil;
   gtk_css_provider_load_from_data(FCss, PChar(css), -1, @err);
   if err <> nil then
@@ -1841,7 +1800,6 @@ begin
 
   TopMenu('_Terminal');
   AddAccel(NewImageMenuItem(m, 'Open new _tab', 'utilities-terminal', @CbNewLocal, nil), Ord('T'), ctrlshift);
-  AddAccel(NewImageMenuItem(m, '_New session...', 'preferences-desktop-remote-desktop', @CbNewSession, nil), Ord('N'), ctrlshift);
   NewMenuSeparator(m);
   AddAccel(NewImageMenuItem(m, '_Copy', 'edit-copy', @CbCopy, nil), Ord('C'), ctrlshift);
   AddAccel(NewImageMenuItem(m, '_Paste', 'edit-paste', @CbPaste, nil), Ord('V'), ctrlshift);
@@ -1861,7 +1819,7 @@ begin
   AddAccel(NewImageMenuItem(m, 'E_xit', 'system-shutdown', @CbQuit, nil), Ord('Q'), ctrlshift);
 
   TopMenu('_Sessions');
-  NewImageMenuItem(m, '_New session', 'preferences-desktop-remote-desktop', @CbNewSession, nil);
+  AddAccel(NewImageMenuItem(m, '_New session...', 'preferences-desktop-remote-desktop', @CbNewSession, nil), Ord('N'), ctrlshift);
   NewImageMenuItem(m, 'User _sessions', 'starred', @CbShowSessions, nil);
   NewImageMenuItem(m, '_Recover previous sessions', 'document-revert', @CbRecover, nil);
   NewMenuSeparator(m);
@@ -1916,7 +1874,6 @@ begin
   TopMenu('S_ettings');
   NewImageMenuItem(m, '_Configuration', 'preferences-system', @CbSettings, nil);
   NewImageMenuItem(m, '_Passwords management', 'dialog-password', @CbPasswords, nil);
-  NewImageMenuItem(m, '_Keyboard shortcuts', 'preferences-desktop-keyboard-shortcuts', @CbShortcuts, nil);
 
   TopMenu('_Macros');
   { rebuilt every time it opens so that new macros appear }
@@ -1958,16 +1915,11 @@ var
 begin
   FToolbar := gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
   AddClass(FToolbar, 'lx-toolbar');
+  AddClass(FToolbar, 'lx-maintoolbar');
   Add(ToolbarButton('preferences-desktop-remote-desktop', 'Session', 'Create a new session (SSH, telnet, RDP, VNC, ...)', @TbSession));
   Add(ToolbarButton('network-server', 'Servers', 'Start / stop network servers (HTTP, FTP, TFTP, SSH, ...)', @TbServers));
-  b := ToolbarButton('applications-utilities', 'Tools', 'Network and system tools', nil);
-  Connect(b, 'clicked', @TbMenu, Pointer(PtrInt(MENU_TOOLS)));
-  Add(b);
   b := ToolbarButton('applications-games', 'Games', 'Have a break...', nil);
   Connect(b, 'clicked', @TbMenu, Pointer(PtrInt(MENU_GAMES)));
-  Add(b);
-  b := ToolbarButton('starred', 'Sessions', 'Saved sessions', nil);
-  Connect(b, 'clicked', @TbMenu, Pointer(PtrInt(MENU_SESSIONS)));
   Add(b);
   b := ToolbarButton('preferences-desktop-display', 'View', 'Display options', nil);
   Connect(b, 'clicked', @TbMenu, Pointer(PtrInt(MENU_VIEW)));
@@ -1993,11 +1945,9 @@ begin
   b := ToolbarButton('help-browser', 'Help', 'Help', nil);
   Connect(b, 'clicked', @TbMenu, Pointer(PtrInt(MENU_HELP)));
   Add(b);
-  b := ToolbarButton('system-shutdown', 'Exit', 'Exit ' + APP_NAME, @TbExit);
-  gtk_box_pack_end(FToolbar, b, False, False, 0);
   b := ToolbarButton('xorg', 'X server', 'X server', nil);
   Connect(b, 'clicked', @TbMenu, Pointer(PtrInt(MENU_XSERVER)));
-  gtk_box_pack_end(FToolbar, b, False, False, 8);
+  gtk_box_pack_end(FToolbar, b, False, False, 0);
   gtk_box_pack_start(VBox, FToolbar, False, False, 0);
 end;
 
@@ -2084,11 +2034,6 @@ begin
   FMainStack := gtk_stack_new;
   FNotebook := gtk_notebook_new;
   SetupNotebook(FNotebook);
-  b := NewFlatIconButton('list-add', 'Open a new tab (local terminal)', 16);
-  AddClass(b, 'lx-newtab');
-  Connect(b, 'clicked', @TbNewTab, nil);
-  gtk_widget_show_all(b);
-  gtk_notebook_set_action_widget(FNotebook, b, GTK_PACK_END);
   gtk_stack_add_named(FMainStack, FNotebook, 'tabs');
 
   FSplitBox := gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -2119,7 +2064,6 @@ begin
   { home tab }
   FHome := THomeTab.Create(Self);
   AddTab(FHome, True);
-  AddQuickCompletion(FHome.SearchEntry);
 end;
 
 procedure TMainWindow.BuildStatusBar(VBox: Pointer);
@@ -3612,68 +3556,16 @@ end;
 
 procedure TMainWindow.PopupToolbarMenu(Button: Pointer; Kind: Integer);
 var
-  menu, item, sub, light, dark: Pointer;
-  i, j: Integer;
-  s: TSession;
-  folders: TStringList;
+  menu, item, light, dark: Pointer;
+  i: Integer;
   modes: array[0..4] of string = ('Single tab mode', '2 terminals: vertical split', '2 terminals: horizontal split',
     '4 terminals (2 x 2)', 'Mosaic: all terminals');
   disp: string;
 begin
   menu := gtk_menu_new;
   case Kind of
-    MENU_TOOLS:
-      if Assigned(BuildToolsMenuProc) then BuildToolsMenuProc(menu);
     MENU_GAMES:
       if Assigned(BuildGamesMenuProc) then BuildGamesMenuProc(menu);
-    MENU_SESSIONS:
-      begin
-        NewImageMenuItem(menu, 'New session...', 'preferences-desktop-remote-desktop', @CbNewSession, nil);
-        NewImageMenuItem(menu, 'Recover previous sessions', 'document-revert', @CbRecover, nil);
-        sub := NewSubMenu(menu, 'Import sessions', 'document-import');
-        BuildImportMenu(sub);
-        NewMenuSeparator(menu);
-        folders := TStringList.Create;
-        try
-          folders.Sorted := True;
-          folders.Duplicates := dupIgnore;
-          for i := 0 to Store.Sessions.Count - 1 do
-            if Store.Sessions[i].Folder = '' then
-            begin
-              s := Store.Sessions[i];
-              item := NewImageMenuItem(menu, s.DisplayName, s.IconName, nil, nil);
-              g_object_set_data_full(item, 'sid', g_strdup(PChar(s.Id)), @FreePCharNotify);
-              Connect(item, 'activate', @CbOpenSavedSession, nil);
-            end
-            else
-              folders.Add(Store.Sessions[i].Folder);
-          for j := 0 to folders.Count - 1 do
-          begin
-            sub := NewSubMenu(menu, folders[j], 'folder');
-            item := NewImageMenuItem(sub, 'Open all', 'media-playback-start', @CbOpenFolder, nil);
-            g_object_set_data_full(item, 'folder', g_strdup(PChar(folders[j])), @FreePCharNotify);
-            item := NewImageMenuItem(sub, 'Open all in split view', 'preferences-desktop-virtual', @CbOpenFolder, nil);
-            g_object_set_data_full(item, 'folder', g_strdup(PChar(folders[j])), @FreePCharNotify);
-            g_object_set_data(item, 'layout', Pointer(1));
-            item := NewImageMenuItem(sub, 'Open all in MultiExec', 'terminator', @CbOpenFolder, nil);
-            g_object_set_data_full(item, 'folder', g_strdup(PChar(folders[j])), @FreePCharNotify);
-            g_object_set_data(item, 'layout', Pointer(2));
-            NewMenuSeparator(sub);
-            for i := 0 to Store.Sessions.Count - 1 do
-              if Store.Sessions[i].Folder = folders[j] then
-              begin
-                s := Store.Sessions[i];
-                item := NewImageMenuItem(sub, s.DisplayName, s.IconName, nil, nil);
-                g_object_set_data_full(item, 'sid', g_strdup(PChar(s.Id)), @FreePCharNotify);
-                Connect(item, 'activate', @CbOpenSavedSession, nil);
-              end;
-          end;
-        finally
-          folders.Free;
-        end;
-        if Store.Sessions.Count = 0 then
-          gtk_widget_set_sensitive(NewMenuItem(menu, '(no saved session)', nil, nil), False);
-      end;
     MENU_VIEW:
       begin
         NewCheckMenuItem(menu, 'Show menu bar', Settings.ShowMenubar, @CbToggleMenubar, nil);
@@ -3810,7 +3702,8 @@ begin
     'F11                   Fullscreen'#10 +
     'Ctrl+click            Open a link'#10 +
     'Right-click           Paste (Ctrl+right-click: context menu)'#10 +
-    'Middle-click on tab   Close tab');
+    'Middle-click on tab   Close tab'#10 +
+    'Ctrl+Shift+Q          Exit ' + APP_NAME);
 end;
 
 procedure TMainWindow.SaveOpenTabs;
@@ -4031,7 +3924,7 @@ begin
   else if cmd = 'collapse' then SetSidebarCollapsed(True)
   else if cmd = 'split' then SetSplitMode(StrToIntDef(arg, 0))
   else if cmd = 'multiexec' then SetMultiExec(arg <> '0')
-  else if cmd = 'menu' then PopupToolbarMenu(FToolbar, StrToIntDef(arg, MENU_TOOLS))
+  else if cmd = 'menu' then PopupToolbarMenu(FToolbar, StrToIntDef(arg, MENU_VIEW))
   else if cmd = 'settings' then CbSettings(nil, nil)
   else if cmd = 'servers' then CbServers(nil, nil)
   else if cmd = 'tunnels' then CbTunnels(nil, nil)

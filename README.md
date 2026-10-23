@@ -14,20 +14,23 @@ sur le moteur C de PuTTY).
 - en ligne de commande : `linxterm` (options : `--local`, `--ssh user@hote[:port]`,
   `--session <nom ou id>`, `--edit <fichier>`).
 
-## Interface (identique à MobaXterm)
+## Interface (celle de MobaXterm, modernisée)
 
 - Barre de menus : Terminal, Sessions, View, X server, Tools, Games, Settings, Macros, Help.
-- Grande barre d'outils : Session, Servers, Tools, Games, Sessions, View, Split,
-  MultiExec, Tunneling, Packages, Settings, Help … X server, Exit.
+- Grande barre d'outils : Session, Servers, Games, View, Split, MultiExec, Tunneling,
+  Packages, Settings, Help … X server.
+- **Aucun bouton en double** : *Sessions* et *Tools* sont les onglets du panneau latéral, on
+  quitte par la croix de la fenêtre (ou *Terminal > Exit*, Ctrl+Maj+Q), un terminal local
+  s'ouvre depuis l'onglet d'accueil (ou Ctrl+Maj+T), la recherche se fait dans le Quick
+  connect ; dans les menus, chaque commande n'apparaît qu'une fois.
 - Champ **Quick connect** : filtre les sessions, ou se connecte directement
   (`user@hote`, `telnet hote 23`, `rdp hote`, `vnc hote`, `ftp hote`, `sftp hote`…), avec
   **autocomplétion** : sessions enregistrées, connexions récentes, alias de `~/.ssh/config` et
-  hôtes de `~/.ssh/known_hosts` (plusieurs mots possibles : « lab web » ; même chose dans la
-  recherche de l'onglet d'accueil).
+  hôtes de `~/.ssh/known_hosts` (plusieurs mots possibles : « lab web »).
 - Barre latérale à onglets verticaux : **Sessions** (arbre « User sessions » avec dossiers,
   glisser-déposer, menus contextuels), **Tools**, **Macros**, **Sftp**.
-- Onglet d'accueil : « Start local terminal », « Recover previous sessions »,
-  recherche, sessions récentes, « Import sessions… », palette de commandes.
+- Onglet d'accueil : « Start local terminal » (Entrée), « Recover previous sessions » et
+  sessions récentes en un clic.
 - Onglets numérotés (`1. /home/pc`, `2. serveur`…), détachables dans une fenêtre,
   renommables, dupliquables ; « Session stopped – Press R to restart » à la fin d'une session.
 - **Couleur d'onglet** par session (*Bookmark settings > Tab color* : rouge pour la production…).
@@ -43,6 +46,9 @@ sur le moteur C de PuTTY).
   (flèche verte, ou rouge si la commande précédente a échoué).
 - Thème clair (classique), sombre ou **automatique** (suit le mode clair / sombre du bureau
   GNOME, en direct) ; marges intérieures du terminal, onglet actif souligné, survols.
+- Style modernisé, mêmes règles dans les deux thèmes : menus et barre d'outils d'un seul
+  tenant, coins arrondis, survols discrets, onglet latéral actif marqué d'un trait bleu, onglet
+  actif relié à son contenu (sombre au-dessus d'un terminal, clair au-dessus de l'accueil).
 
 ## Types de sessions (fenêtre « Session settings »)
 
@@ -103,7 +109,7 @@ dans le même fichier. Menu *Terminal > Open the session logs folder* et clic dr
 
 ## Import des sessions
 
-*Sessions > Import sessions* (ou l'onglet d'accueil) : reprenez vos sessions existantes,
+*Sessions > Import sessions* : reprenez vos sessions existantes,
 classées dans un dossier par origine, sans doublon si vous importez deux fois :
 
 - **MobaXterm** : fichier `.mxtsessions` (*Sessions > Export sessions* sous Windows) ou
@@ -182,6 +188,7 @@ Les mots de passe ne sont jamais importés.
 |-----------|--------|
 | Ctrl+Shift+T | nouveau terminal local |
 | Ctrl+Shift+N | nouvelle session |
+| Ctrl+Shift+Q | quitter LinXterm |
 | Ctrl+Shift+W | fermer l'onglet |
 | Ctrl+Shift+D | dupliquer l'onglet |
 | Ctrl+PgUp / PgDn | onglet précédent / suivant |
@@ -241,7 +248,8 @@ Nouveautés :
   serveurs sans fichiers cachés, mots de passe jamais écrits sans trousseau (sauf option),
   aléa cryptographique, fichier temporaire du navigateur SFTP dans le dossier privé ;
 - visuel : thème automatique (clair / sombre du bureau), marges du terminal, onglet actif
-  souligné, survols, page d'accueil retravaillée ;
+  souligné, survols, page d'accueil retravaillée ; style modernisé sans bouton en double
+  (barre d'outils, accueil, onglets et menus allégés) ;
 - ouverture d'un dossier de sessions entier (onglets, Split, MultiExec limité au dossier) ;
 - MultiExec : exclusion d'un terminal (case « Receive input ») ;
 - autocomplétion du Quick connect (sessions, récents, `~/.ssh/config`, `known_hosts`) ;
