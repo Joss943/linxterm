@@ -12,7 +12,7 @@ uses
 const
   APP_NAME = 'LinXterm';
   APP_ID = 'dev.linxterm.LinXterm';
-  APP_VERSION = '1.3';
+  APP_VERSION = '1.3.1';
 
 type
   TChildProcess = class;
@@ -632,7 +632,8 @@ end;
 
 function IconPixbuf(const Name: string; Size: Integer): Pointer;
 var
-  key, fn: string;
+  key, fn, d: string;
+  dirs: array of string;
   idx: Integer;
   err: PGError;
   pb: Pointer;
@@ -659,7 +660,31 @@ begin
       Result := nil;
     end;
   end;
-  { 2. Papirus (colourful, close to the MobaXterm look) }
+  { 2. Papirus icons shipped with LinXterm (icons/papirus/<size>), so that the
+    application looks the same on every computer; the colourful 24 px version
+    is used for small sizes (Papirus icons below 22 px are monochrome) }
+  if Result = nil then
+  begin
+    if Size <= 24 then dirs := ['24', '32', '64']
+    else if Size <= 40 then dirs := ['32', '64', '24']
+    else dirs := ['64', '32', '24'];
+    for d in dirs do
+    begin
+      fn := AppDir + '/icons/papirus/' + d + '/' + Name + '.svg';
+      if FileExists(fn) then
+      begin
+        err := nil;
+        Result := gdk_pixbuf_new_from_file_at_size(PChar(fn), Size, Size, @err);
+        if err <> nil then
+        begin
+          ErrMsg(err);
+          Result := nil;
+        end;
+        Break;
+      end;
+    end;
+  end;
+  { 3. Papirus installed on the system (icons not shipped) }
   if Result = nil then
   begin
     if PapirusTheme = nil then
@@ -682,7 +707,7 @@ begin
     if Result = nil then
       Result := LoadFromTheme(PapirusTheme, Name, Size);
   end;
-  { 3. current theme }
+  { 4. current theme }
   if Result = nil then
     Result := LoadFromTheme(gtk_icon_theme_get_default, Name, Size);
   if Result = nil then

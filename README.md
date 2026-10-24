@@ -378,6 +378,10 @@ Dans `~/.config/linxterm/` : `settings.json`, `sessions.json`, `macros.json`,
 
 ## Historique
 
+### 1.3.1
+- les icônes de l'interface sont livrées avec LinXterm : affichage identique sur tous les
+  ordinateurs, même sans le thème Papirus.
+
 ### 1.3
 Interface :
 - aucun bouton en double : *Sessions*, *Tools* et *Exit* retirés de la barre d'outils (onglets
@@ -454,3 +458,7 @@ Interface :
 ## Licence
 
 LinXterm est distribué sous licence GNU GPL version 3 : voir le fichier [LICENSE](LICENSE).
+
+Les icônes de `icons/papirus/` proviennent du thème [Papirus](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme)
+(GPL-3.0, voir `icons/papirus/LICENSE`) : elles sont livrées avec LinXterm pour que l'interface soit
+identique sur tous les ordinateurs, que Papirus y soit installé ou non.
